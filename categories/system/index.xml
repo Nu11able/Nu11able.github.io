@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System on Nu11able</title><link>https://nu11able.github.io/categories/system/</link><description>Recent content in System on Nu11able</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 23 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://nu11able.github.io/categories/system/index.xml" rel="self" type="application/rss+xml"/><item><title>unix内核源码剖析</title><link>https://nu11able.github.io/p/unix%E5%86%85%E6%A0%B8%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/</link><pubDate>Wed, 23 Feb 2022 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/unix%E5%86%85%E6%A0%B8%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/</guid><description>&lt;h1 id="faq">FAQ
+&lt;/h1>&lt;ul>
+&lt;li>
+&lt;p>Q:用户模式和内核模式有什么区别&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>A:虚拟地址在用户模式时映射到用户程序的内存区域，在内核模式时则映射到内核程序的内存区域。内存映射的切换有MMU来实现&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Q:系统调用到底是什么&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>A:用户程序由用户进程处理，无法访问加载内核程序的区域，也就无法执行由内核实现的功能。为了访问内核功能，用户程序必须通过系统调用向内核提出访问内核功能的请求&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Q:父进程为什么一定要得到子进程的处理结果才能够将子进程清理掉&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Q:PPDA(per process data area)和APR(active page register)到底是什么&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="第二章-进程">第二章 进程
+&lt;/h1>&lt;ul>
+&lt;li>内核程序在系统启动时被读取到内存中&lt;/li>
+&lt;/ul>
+&lt;h1 id="第三章-进程的管理1">第三章 进程的管理1
+&lt;/h1>&lt;ul>
+&lt;li>父进程在子进程结束时取其结束状态并释放进程资源&lt;/li>
+&lt;li>子进程与父进程共享代码段(如果子进程执行了其他程序，那么这种关系将被打破)但有自己的数据段(写时复制技术)。&lt;/li>
+&lt;li>&lt;/li>
+&lt;/ul></description></item></channel></rss>

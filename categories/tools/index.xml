@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tools on Nu11able</title><link>https://nu11able.github.io/categories/tools/</link><description>Recent content in Tools on Nu11able</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 03 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://nu11able.github.io/categories/tools/index.xml" rel="self" type="application/rss+xml"/><item><title>cmake使用记录</title><link>https://nu11able.github.io/p/cmake%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/</link><pubDate>Thu, 03 Mar 2022 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/cmake%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/</guid><description>&lt;h1 id="cmake使用记录">cmake使用记录
+&lt;/h1>&lt;h2 id="cmake使用模板">cmake使用模板
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cmake" data-lang="cmake">&lt;span class="line">&lt;span class="cl">&lt;span class="c">#CMake的最低版本要求
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">cmake_minimum_required&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">VERSION&lt;/span> &lt;span class="s">3.0&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#项目名称
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">project&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">tingx&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#设置版本是 Debug 还是 Release
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">CMAKE_BUILD_TYPE&lt;/span> &lt;span class="s2">&amp;#34;Debug&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">GLOB_RECURSE&lt;/span> &lt;span class="s">SRC_FILES&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src/**.cc&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src/**.hpp&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src/**.h&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c"># 移除某些文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">GLOB_RECURSE&lt;/span> &lt;span class="s">MAINS&lt;/span> &lt;span class="s">src/*main.cc&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">list&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REMOVE_ITEM&lt;/span> &lt;span class="s">LIBRARY&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">MAINS&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c"># msvc 按文件夹分组
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">macro&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">source_group_by_dir&lt;/span> &lt;span class="s">source_files&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">MSVC&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_cur_dir&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">CMAKE_CURRENT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">foreach&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_file&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">${source_files&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REGEX&lt;/span> &lt;span class="s">REPLACE&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_cur_dir&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/\(.*\&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="err">\\1&lt;/span> &lt;span class="err">sgbd_fpath&lt;/span> &lt;span class="err">${sgbd_file})
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REGEX&lt;/span> &lt;span class="s">REPLACE&lt;/span> &lt;span class="s2">&amp;#34;\(.*\)/.*&amp;#34;&lt;/span> &lt;span class="s">\\1&lt;/span> &lt;span class="s">sgbd_group_name&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_fpath&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">COMPARE&lt;/span> &lt;span class="s">EQUAL&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_fpath&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_group_name&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="s">sgbd_nogroup&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REPLACE&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;\\&amp;#34;&lt;/span> &lt;span class="s">sgbd_group_name&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_group_name&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_nogroup&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_group_name&lt;/span> &lt;span class="s2">&amp;#34;\\&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">endif&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_nogroup&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">source_group&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_group_name&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="s">FILES&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_file&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">endforeach&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_file&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">endif&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">MSVC&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">endmacro&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">source_group_by_dir&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#设置包含目录
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">include_directories&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#设置输出目录
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">EXECUTABLE_OUTPUT_PATH&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/build&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#添加编译参数,比如add_definitions(-DDEBUG)将在gcc命令行添加DEBUG宏定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">add_definitions&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">-g&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#添加可执行文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">add_executable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">tingx&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">SRC_FILES&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">add_executable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">client&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/test/client.cc&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="cmake预定义变量">cmake预定义变量
+&lt;/h2>&lt;p>&lt;code>以下假设项目文件夹路径为/home/name/project&lt;/code>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>变量&lt;/th>
+&lt;th>值&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>PROJECT_SOURCE_DIR&lt;/td>
+&lt;td>/home/name/project&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="问题汇总">问题汇总
+&lt;/h2>&lt;h3 id="cmakevscode配置后源代码中显示头文件找不到">cmake+vscode配置后源代码中显示头文件找不到
+&lt;/h3>&lt;p>在项目文件夹下.vscode中settings.json中添加行&amp;quot;C_Cpp.default.configurationProvider&amp;quot;: &amp;ldquo;vector-of-bool.cmake-tools&amp;rdquo;&lt;/p></description></item><item><title>Git 笔记</title><link>https://nu11able.github.io/p/git-%E7%AC%94%E8%AE%B0/</link><pubDate>Sat, 26 Feb 2022 02:03:00 +0000</pubDate><guid>https://nu11able.github.io/p/git-%E7%AC%94%E8%AE%B0/</guid><description>&lt;h1 id="git笔记">Git笔记
+&lt;/h1>&lt;h2 id="说明">说明
+&lt;/h2>&lt;p>&lt;code>1、以下举例所用的仓库地址均为：git@github.com:yourname/repo.git&lt;/code>
+&lt;code>2、以下举例所用的仓库地址均为：github_repo&lt;/code>&lt;/p>
+&lt;h2 id="新建仓库">新建仓库
+&lt;/h2>&lt;p>从github中新创建仓库后可以看到下图&lt;/p>
+&lt;ul>
+&lt;li>本地没有代码从0开始&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;# test&amp;#34;&lt;/span> &amp;gt;&amp;gt; README.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git init
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git add README.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit -m &lt;span class="s2">&amp;#34;first commit&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch -M main &lt;span class="c1"># 修改master分支名字为main&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git remote add origin git@github.com:yourname/repo.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push -u origin main
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>本地已有代码&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git remote add origin git@github.com:yourname/repo.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch -M main &lt;span class="c1"># 可以跳过&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push -u origin main
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># or&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push -u origin master &lt;span class="c1"># 默认存在master分支&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="git-remote">git remote
+&lt;/h2>&lt;h3 id="列出远程仓库">列出远程仓库
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git remote
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git remote -v &lt;span class="c1"># 列出详细信息&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="添加删除远程仓库地址">添加/删除远程仓库地址
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git remote add name git@github.com:yourname/repo.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git remote remove name
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="修改仓库名字">修改仓库名字
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git remote rename oldname newname
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="git-rm">git rm
+&lt;/h2>&lt;h3 id="删除对某个文件的跟踪">删除对某个文件的跟踪
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git rm --cached somefile
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果是文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git rm -r --cached somefile
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="git-reset">git reset
+&lt;/h2>&lt;h3 id="撤销commit">撤销commit
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git reset --soft HEAD^ &lt;span class="c1"># 撤销一次commit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git reset --soft HEAD~2 &lt;span class="c1"># 撤销两次commit&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>提交完了之后发现文件名不对，或者说对某个文件做了轻微的改动&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git add . &lt;span class="c1"># 添加所有新的修改到暂存区&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit --amend
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="常见问题">常见问题
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>命令&lt;/th>
+&lt;th>功能&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;/table>
+&lt;h3 id="修复github只有新建仓库时才有小绿点贡献而commit没有">修复github只有新建仓库时才有小绿点贡献而commit没有
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git filter-branch --env-filter &lt;span class="s1">&amp;#39;GIT_AUTHOR_EMAIL=&amp;#34;your_email@email&amp;#34;;GIT_AUTHOR_NAME=&amp;#34;your_name&amp;#34;;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>vim</title><link>https://nu11able.github.io/p/vim/</link><pubDate>Sun, 20 Feb 2022 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/vim/</guid><description>&lt;h1 id="vim使用记录">vim使用记录
+&lt;/h1>&lt;h2 id="单按键命令">&lt;code>单按键命令&lt;/code>
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>按键&lt;/th>
+&lt;th>功能&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>h&lt;/td>
+&lt;td>前&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>j&lt;/td>
+&lt;td>下&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>k&lt;/td>
+&lt;td>上&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>l&lt;/td>
+&lt;td>后&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ESC&lt;/td>
+&lt;td>进入nomal模式&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>i&lt;/td>
+&lt;td>进入INSERT模式&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>v&lt;/td>
+&lt;td>进入选择模式&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>V&lt;/td>
+&lt;td>选择整行&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>y&lt;/td>
+&lt;td>复制&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>p&lt;/td>
+&lt;td>粘贴&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>将光标移到行首(数字0)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>^&lt;/td>
+&lt;td>将光标移到该行第一个字母位置&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>$&lt;/td>
+&lt;td>将光标移到行位&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>a&lt;/td>
+&lt;td>在光标后插入&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>A&lt;/td>
+&lt;td>在行尾插入(相当于$a)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>o&lt;/td>
+&lt;td>在下一行插入(相当于vscode中ctrl+enter)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>O&lt;/td>
+&lt;td>在上一行插入(相当于vscode中ctrl+shift+enter)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>x&lt;/td>
+&lt;td>删除一个字符&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>w&lt;/td>
+&lt;td>移动至下一个单词开始位置&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>e&lt;/td>
+&lt;td>移动至当前单词末尾&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>b&lt;/td>
+&lt;td>后退一个单词&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>u&lt;/td>
+&lt;td>撤销命令&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>U&lt;code>？&lt;/code>&lt;/td>
+&lt;td>To undo all the changes on a line&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>p&lt;/td>
+&lt;td>将粘贴板的内容复制到光标后面(lowercase)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>P&lt;/td>
+&lt;td>将粘贴板的内容复制到光标前面(uppercase)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="窗口分割">窗口分割
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>命令&lt;/th>
+&lt;th>功能&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>:sp [filename]&lt;/td>
+&lt;td>水平分割窗口&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>:vsplit [filename]&lt;/td>
+&lt;td>垂直分割窗口&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Ctrl+w+方向键&lt;/td>
+&lt;td>切换到前／下／上／后一个窗格&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Ctrl+w+h/j/k/l&lt;/td>
+&lt;td>同上&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Ctrl+ww&lt;/td>
+&lt;td>依次向后切换到下一个窗格中&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="组合按键命令">&lt;code>组合按键命令&lt;/code>
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>按键&lt;/th>
+&lt;th>功能&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>dw&lt;/td>
+&lt;td>删除至下一个单词开始&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>de&lt;/td>
+&lt;td>删除至当前单词末尾&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>dd&lt;/td>
+&lt;td>删除整行&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>d$&lt;/td>
+&lt;td>删除光标位置到行尾&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>r?&lt;/td>
+&lt;td>r+任意按键：将光标位置修改为所按按键&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ce&lt;/td>
+&lt;td>删除光标至当前单词末尾并进入INSERT模式(相当于dei)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;ul>
+&lt;li>&lt;strong>d [number] motion&lt;/strong>, d: delete&lt;/li>
+&lt;li>&lt;strong>c [number] motion&lt;/strong>, c: change&lt;/li>
+&lt;/ul>
+&lt;h2 id="命令说明">&lt;code>命令说明&lt;/code>
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>命令&lt;/th>
+&lt;th>功能&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>/word&lt;/td>
+&lt;td>搜索word&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>s/old/new&lt;/td>
+&lt;td>to substitute &amp;rsquo;new&amp;rsquo; for &amp;lsquo;old&amp;rsquo;(只替换一次)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>s/old/new/g&lt;/td>
+&lt;td>to substitute &amp;rsquo;new&amp;rsquo; for &amp;lsquo;old&amp;rsquo;(修改该行内所有匹配)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>#,#s/old/new/g&lt;/td>
+&lt;td>where #,# are the line numbers of the range of lines where the substitution is to be done.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%s/old/new/g&lt;/td>
+&lt;td>to change every occurrence in the whole file.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>%s/old/new/gc&lt;/td>
+&lt;td>to find every occurrence in the whole file, with a prompt whether to substitute or not.(c : confirm)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>!command&lt;/td>
+&lt;td>execute the external command.&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="其他快捷按键">&lt;code>其他快捷按键&lt;/code>
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;blockquote>
+&lt;p>Type % to find a matching ),], or }&lt;/p>
+&lt;/blockquote>
+&lt;p>在[, (或 { 按下 % 可以快速移动到与之匹配的括号处&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在选择模式下按下:进入命令模式w TEST会将选中的内容保存到TEST文件中&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在命令模式下: r FILENAME 会将FILENAME的内容插入到下一行，&lt;strong>r !ls将ls命令的执行结果插入到后一行&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>To go back to where you came from press &lt;strong>CTRL-O&lt;/strong> (Keep Ctrl down while pressing the letter o). Repeat to go back further. CTRL-I goes forward.&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>GDB</title><link>https://nu11able.github.io/p/gdb/</link><pubDate>Mon, 10 Jan 2022 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/gdb/</guid><description>&lt;h1 id="chapter-1">Chapter 1
+&lt;/h1>&lt;p>gdb &lt;code>startfile&lt;/code>&lt;/p>
+&lt;p>set width w(a number)&lt;/p>
+&lt;p>break breakpoint &lt;code>it could be line number|function name|address&lt;/code>&lt;/p>
+&lt;p>run&lt;/p>
+&lt;p>n &lt;code>next. line&lt;/code>&lt;/p>
+&lt;p>s &lt;code>step. into the function&lt;/code>&lt;/p>
+&lt;p>bt &lt;code>backtrace.&lt;/code>&lt;/p>
+&lt;p>p lquote &lt;code>print. the value of lquote&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>you can also use &lt;code>p&lt;/code> to assign a specific value to an element,such as &lt;code>p len_lquote=strlen(lquote)&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>We can set them to better values using the p command, since it can print the value of any expression—and that expression can include subroutine calls and assignments.&lt;/p>
+&lt;/blockquote>
+&lt;p>l &lt;code>list. the source surrounding the current line(10 lines by default) &lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>you can use &amp;ldquo;l 50&amp;rdquo; to display the source surrounding the 50th line&lt;/li>
+&lt;/ul>
+&lt;p>c &lt;code>continue.&lt;/code>&lt;/p>
+&lt;h1 id="chapter-2">Chapter 2
+&lt;/h1>&lt;p>Ctrl-d &lt;code>Program exited normally&lt;/code>&lt;/p>
+&lt;p>q &lt;code>quit. the gdb&lt;/code>&lt;/p>
+&lt;blockquote>
+&lt;p>The most usual way to start gdb is with one argument, specifying an executable program:&lt;code>gdb program&lt;/code>
+You can also start with both an executable program and a core file specified:&lt;code>gdb program core&lt;/code>
+You can, instead, specify a process ID as a second argument or use option -p, if youwant to debug a running process:&lt;code>gdb program 1234|gdb -p 1234&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>&lt;code>gdb --args gcc -O2 -c foo.c &lt;/code>This will cause gdb to debug gcc, and to set gcc’s command-line arguments (see
+Section 4.3 [Arguments], page 34) to ‘-O2 -c foo.c.&lt;/p>
+&lt;/blockquote>
+&lt;p>gdb &amp;ndash;silent|-quiet|-q &lt;code>Do not print the introductory and copyright message&lt;/code>&lt;/p>
+&lt;p>gdb &amp;ndash;help | gdb -h&lt;/p>
+&lt;p>gdb &amp;ndash;cd directory &lt;code>Run gdb using directory as its working directory, instead of the current directory&lt;/code>&lt;/p>
+&lt;blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="o">!&lt;/span>&lt;span class="n">command&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Invoke&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">standard&lt;/span> &lt;span class="n">shell&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">execute&lt;/span> &lt;span class="n">command&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Note&lt;/span> &lt;span class="n">that&lt;/span> &lt;span class="n">no&lt;/span> &lt;span class="n">space&lt;/span> &lt;span class="n">is&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">needed&lt;/span> &lt;span class="n">between&lt;/span> &lt;span class="o">!&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">command&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">If&lt;/span> &lt;span class="n">it&lt;/span> &lt;span class="n">exists&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">environment&lt;/span> &lt;span class="n">variable&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">SHELL&lt;/span> &lt;span class="n">determines&lt;/span> &lt;span class="n">which&lt;/span> &lt;span class="n">shell&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">run&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Otherwise&lt;/span> &lt;span class="n">gdb&lt;/span> &lt;span class="n">uses&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="n">default&lt;/span> &lt;span class="n">shell&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="err">‘&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">bin&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">sh&lt;/span>&lt;span class="err">’&lt;/span> &lt;span class="n">on&lt;/span> &lt;span class="n">Unix&lt;/span> &lt;span class="n">systems&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="err">‘&lt;/span>&lt;span class="n">COMMAND&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">COM&lt;/span>&lt;span class="err">’&lt;/span> &lt;span class="n">on&lt;/span> &lt;span class="n">MS&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">DOS&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">etc&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>pipe [command] | shell_command
+| [command] | shell_command
+pipe -d delim command delim shell_command
+| -d delim command delim shell_command
+Executes command and sends its output to shell command. Note that no space
+is needed around |. If no command is provided, the last command executed is
+repeated.
+In case the command contains a |, the option -d delim can be used to specify an alternate delimiter string delim that separates the command from the
+shell command.
+Example:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="k">var&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">black&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">144&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">red&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">233&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">green&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">377&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">blue&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">610&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">white&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">987&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">pipe&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="k">var&lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="n">wc&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">7&lt;/span> &lt;span class="mi">19&lt;/span> &lt;span class="mi">80&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">|&lt;/span>&lt;span class="n">p&lt;/span> &lt;span class="k">var&lt;/span>&lt;span class="o">|&lt;/span>&lt;span class="n">wc&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">l&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">7&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">p&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="k">var&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="mi">4&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">black&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x90&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">red&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0xe9&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">green&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x179&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">blue&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x262&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">white&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x3db&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">||&lt;/span>&lt;span class="n">grep&lt;/span> &lt;span class="n">red&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">red&lt;/span> &lt;span class="o">=&amp;gt;&lt;/span> &lt;span class="mh">0xe9&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">d&lt;/span> &lt;span class="o">!&lt;/span> &lt;span class="n">echo&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">contains&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">char&lt;/span>\&lt;span class="n">n&lt;/span> &lt;span class="o">!&lt;/span> &lt;span class="n">sed&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">e&lt;/span> &lt;span class="err">’&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">/|/&lt;/span>&lt;span class="n">PIPE&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">’&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">this&lt;/span> &lt;span class="n">contains&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">PIPE&lt;/span> &lt;span class="n">char&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">d&lt;/span> &lt;span class="n">xxx&lt;/span> &lt;span class="n">echo&lt;/span> &lt;span class="n">this&lt;/span> &lt;span class="n">contains&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">char&lt;/span>&lt;span class="o">!&lt;/span>\&lt;span class="n">n&lt;/span> &lt;span class="n">xxx&lt;/span> &lt;span class="n">sed&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">e&lt;/span> &lt;span class="err">’&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">/|/&lt;/span>&lt;span class="n">PIPE&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="err">’&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">this&lt;/span> &lt;span class="n">contains&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">PIPE&lt;/span> &lt;span class="n">char&lt;/span>&lt;span class="o">!&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">gdb&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The convenience variables $_shell_exitcode and $_shell_exitsignal can be used to
+examine the exit status of the last shell command launched by shell, make, pipe and |.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/blockquote>
+&lt;h1 id="gdb-commands">GDB commands
+&lt;/h1>&lt;blockquote>
+&lt;p>set print elements NUMBER-OF-ELEMENTS
+set print array-indexes
+set print elements 10 # to change the limit of array elements to print&lt;/p>
+&lt;/blockquote></description></item></channel></rss>
