@@ -1,0 +1,1184 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>System on Nu11able</title><link>https://nu11able.github.io/categories/system/</link><description>Recent content in System on Nu11able</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 23 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://nu11able.github.io/categories/system/index.xml" rel="self" type="application/rss+xml"/><item><title>unix内核源码剖析</title><link>https://nu11able.github.io/p/unix%E5%86%85%E6%A0%B8%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/</link><pubDate>Wed, 23 Feb 2022 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/unix%E5%86%85%E6%A0%B8%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/</guid><description>&lt;h1 id="faq">FAQ
+&lt;/h1>&lt;ul>
+&lt;li>
+&lt;p>Q:用户模式和内核模式有什么区别&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>A:虚拟地址在用户模式时映射到用户程序的内存区域，在内核模式时则映射到内核程序的内存区域。内存映射的切换有MMU来实现&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Q:系统调用到底是什么&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>A:用户程序由用户进程处理，无法访问加载内核程序的区域，也就无法执行由内核实现的功能。为了访问内核功能，用户程序必须通过系统调用向内核提出访问内核功能的请求&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Q:父进程为什么一定要得到子进程的处理结果才能够将子进程清理掉&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Q:PPDA(per process data area)和APR(active page register)到底是什么&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="第二章-进程">第二章 进程
+&lt;/h1>&lt;ul>
+&lt;li>内核程序在系统启动时被读取到内存中&lt;/li>
+&lt;/ul>
+&lt;h1 id="第三章-进程的管理1">第三章 进程的管理1
+&lt;/h1>&lt;ul>
+&lt;li>父进程在子进程结束时取其结束状态并释放进程资源&lt;/li>
+&lt;li>子进程与父进程共享代码段(如果子进程执行了其他程序，那么这种关系将被打破)但有自己的数据段(写时复制技术)。&lt;/li>
+&lt;li>&lt;/li>
+&lt;/ul></description></item><item><title>ubuntu安装及美化</title><link>https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/</link><pubDate>Sun, 03 May 2020 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/</guid><description>&lt;h1 id="安装ubuntu">安装ubuntu
+&lt;/h1>&lt;p>这里我采用的是VMwarePro15虚拟机，实体机上也是一样的步骤，只不过要自己制作启动盘。(本教程写给linux小白看的，当然我自己也比小白好不了多少，其中难免有不当之处，还望告知[也将此篇文章当做自己的一个学习笔记，不定时更新])&lt;/p>
+&lt;p>说明一下为啥选择ubuntu，以前刚开始学习使用linux的时候要安装软件通常都不知道名字叫啥，知道命令是apt install xxxxx，就是不知道后面该加什么东西，后面发现ubuntu的提示实在太感人,比如我要使用ifconfig它会提示我安装net-tools，也许其他系统也有只是我没发现，没错！！就因为这个慢慢的爱上ubuntu。233&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/apt%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA.png"
+width="1137"
+height="868"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/apt%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA_hu11610449754463554679.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/apt%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA_hu2285593097109216415.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="130"
+data-flex-basis="314px"
+>&lt;/p>
+&lt;h2 id="开始安装ubuntu1804httpsubuntucomdownloaddesktop-ubuntu官网">开始安装&lt;a class="link" href="https://ubuntu.com/download/desktop" title="ubuntu官网"
+target="_blank" rel="noopener"
+>ubuntu18.04&lt;/a>
+&lt;/h2>&lt;h3 id="step1">step1
+&lt;/h3>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu1.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu1_hu12910437173417494253.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu1_hu4242772917285499164.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+选择稍后安装操作系统
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu2.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu2_hu2290494048767332753.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu2_hu6166489202552793242.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+选择linux ubuntu
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu3.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu3_hu18133400740566672699.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu3_hu16505254025998800058.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+选择自己的安装位置
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu4.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu4_hu4487982576644181030.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu4_hu7723284362771492799.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+在指定磁盘容量的时候如果打算长期使用的话建议磁盘稍微大一点
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu5.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu5_hu9340960917753268374.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu5_hu12188903944511983393.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+点击编辑此虚拟机
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu6.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu6_hu11756210398872837273.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu6_hu1419098991989228790.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+从CD/DVD中添加自己下载的系统
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu7.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu7_hu6995626177672184789.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu7_hu6304243043817172126.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu8.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu8_hu10907447897116101056.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu8_hu6338895775583157742.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+开启此虚拟机
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu9.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu9_hu11047019303421495135.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu9_hu14504958816948732346.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>&lt;/p>
+&lt;h3 id="step2">step2
+&lt;/h3>&lt;p>install ubuntu&lt;code>在这一步你们可以选择chinese&lt;/code>，设置系统语言，也可以安装之后再改
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu10.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu10_hu16446022034529348930.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu10_hu4658233846074489868.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+一路continue下去就好了
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu12.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu12_hu7109252728541639682.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu12_hu11420402311531626788.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+&lt;strong>在这一步的时候把Download updates while installing ubuntu那一选项去掉&lt;/strong>
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu11.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu11_hu81690894223506827.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu11_hu7870843440779891298.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu13.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu13_hu13664709809659715950.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu13_hu1239229293237903612.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+选择时区
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu14.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu14_hu4062832089092817585.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu14_hu736666123274773972.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+设置用户名和密码&lt;code>这里设置的密码务必记住，待会儿登录大的时候要用&lt;/code>
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu15.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu15_hu11689272317888593871.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu15_hu11541601528110745507.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+开始安装
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu16.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu16_hu729646801722901329.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu16_hu2826606933706684007.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu17.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu17_hu14698474505055372530.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu17_hu8109490486266190899.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+发现是不是安装的好慢？&lt;code>告诉你们一个小秘密，其实这里是可以点击skip的&lt;/code>安装的过程好像会联网下载什么东西还是啥的我也不是很清楚，如果不放心的话可以断开网络安装
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu18.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu18_hu16734983178032238579.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu18_hu9604850669792791079.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+点击重启
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu19.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu19_hu5704526920079152185.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu19_hu14047736116276387305.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+输入刚刚设置的密码就可以登录了
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu20.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu20_hu6294202835902068307.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85ubuntu20_hu264992650300877239.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>&lt;/p>
+&lt;h2 id="ubuntu-美化">ubuntu 美化
+&lt;/h2>&lt;p>首先先来确定一下主要美化哪几个方面:&lt;/p>
+&lt;ul>
+&lt;li>壁纸(桌面壁纸、锁屏壁纸)&lt;/li>
+&lt;li>图标(就是你在桌面上看到的那些图标)&lt;/li>
+&lt;li>主题(什么是主题？这个我也不好说)&lt;/li>
+&lt;li>终端terminal(一个漂亮的ubuntu怎么能少了一个漂亮的终端)&lt;/li>
+&lt;li>shell(修改了之后最直观的就是顶部的菜单栏改变了)&lt;/li>
+&lt;li>开机动画&lt;/li>
+&lt;li>任务栏&lt;/li>
+&lt;/ul>
+&lt;p>说明一下美化的话需要我们安装插件，你可以通过浏览器来安装插件(前提示已经安装了​chrome-gnome-shell插件)也可以通过命令行来安装(但是有些插件的安装命令我也不知道咋输)，所以安装插件我一般通过浏览器来安装&lt;/p>
+&lt;h3 id="step0安装chrome-gnome-shell">step0：安装​chrome-gnome-shell
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt install chrome-gnome-shell
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell1.png"
+width="1372"
+height="925"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell1_hu4849534898343460575.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell1_hu12215269928552816485.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="355px"
+>
+安装好了之后再浏览器输入https://extensions.gnome.org/ 打开之后会有一个警告，点击Click here to install browser extension 安装浏览器拓展，按照提示安装，下载完后点击 Add 即可。
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell2.png"
+width="1257"
+height="871"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell2_hu16938268102112553366.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell2_hu8770437427343028939.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="346px"
+>
+安装完了之后我们可以通过浏览器来管理我们安装的插件(这个时候你可以看到右上角有一个黑色的脚丫子图标,以后直接点击该图标就可以进入“主页”)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell3.png"
+width="1257"
+height="871"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell3_hu4638412224206313259.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/chrome_shell3_hu13691536021213147230.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="346px"
+>
+我这里安装的插件有些多，这是因为我之前安装gnome-shell-extensions软件包，里面包含了许多插件，你们可以通过apt install gnome-shell-extensions 安装，也可以后面用到啥插件的时候用浏览器安装&lt;/p>
+&lt;h3 id="step1安装tweak-tool美化软件在这里你可以设置壁纸图标主题">step1：安装tweak tool（美化软件，在这里你可以设置壁纸、图标、主题&amp;hellip;）、
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt install gnome-tweak-tool
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak1.png"
+width="1518"
+height="1003"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak1_hu14915578217664955268.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak1_hu3333619313661453147.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="151"
+data-flex-basis="363px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak2.png"
+width="1518"
+height="1003"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak2_hu7808423937067424245.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak2_hu6396382514853882551.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="151"
+data-flex-basis="363px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak3.png"
+width="1518"
+height="1003"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak3_hu6472507662313890179.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak3_hu5017404922940272208.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="151"
+data-flex-basis="363px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak4.png"
+width="1257"
+height="871"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak4_hu7665263522575522259.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/tweak4_hu10312438052056666956.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="346px"
+>&lt;/p>
+&lt;h3 id="step2下载主题图标等等">step2：下载主题、图标等等
+&lt;/h3>&lt;p>简单的说明一下：在官网下载了相应的文件之后，将其解压到相应的位置然后就可以通过tweak这个工具来修改了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">themes --&amp;gt; /usr/share/themes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">shell --&amp;gt; /usr/share/themes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">icon --&amp;gt; /usr/share/icons
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">开机动画 --&amp;gt; /usr/share/plymouth/themes
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;a class="link" href="https://www.gnome-look.org" target="_blank" rel="noopener"
+>官网&lt;/a>
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E4%B8%BB%E9%A2%980.png"
+width="1113"
+height="812"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E4%B8%BB%E9%A2%980_hu5188857002576509571.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E4%B8%BB%E9%A2%980_hu12047200476988037584.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="328px"
+>
+我这里直接给出几个链接&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.gnome-look.org/p/1275087/" target="_blank" rel="noopener"
+>主题&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.opendesktop.org/p/1305429/" target="_blank" rel="noopener"
+>图标&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.gnome-look.org/s/Gnome/p/1013030/" target="_blank" rel="noopener"
+>shell&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.gnome-look.org/s/Gnome/p/1207015/" target="_blank" rel="noopener"
+>登录界面&lt;/a> 下载的时候注意自己的系统版本，别下错了&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.gnome-look.org/s/Gnome/p/1009736/" target="_blank" rel="noopener"
+>开机动画&lt;/a> 我承认我放弃了，可能是虚拟机的原因(修改了也没起作用)&lt;/p>
+&lt;h3 id="step3前面准备工作已经做完了下面开始正式修改">step3：前面准备工作已经做完了，下面开始正式修改
+&lt;/h3>&lt;p>ok，前面已经下载了需要的文件，可以开始修改了，除了开机动画之外其他的很简单，把下载的文件解压后发到对应的目录下，打开tweaks就可以修改了&lt;/p>
+&lt;p>下载主题的时候我多下载了几个主题，图中我标出了shell和icon其他的都是主题
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%961.png"
+width="1540"
+height="967"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%961_hu9382776578966141935.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%961_hu11504537765248635960.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>
+下面分别把文件解压之后移动到对应的目录下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 解压命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar xf 你下载的文件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 将解压的文件移动到对应的目录，shell和主题都是移动到usr/share/themes/ 目录下，icon移动到/usr/shar/icons/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv 目标文件 目的地
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%962.png"
+width="1540"
+height="967"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%962_hu14248149813609374731.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%962_hu2810877487858640394.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>
+做好这些之后可以先右键选张好看的背景(通过前面的类比你可以发现/usr/share/backgrounds里面存放的就是壁纸)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%963.png"
+width="1540"
+height="967"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%963_hu1645826724475391794.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%963_hu15012198776846600680.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>
+打开tweak修改成我们下载的文件
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%964.png"
+width="1540"
+height="967"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%964_hu10825270285325952346.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%964_hu16248855577622710163.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>
+修改之后
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%965.png"
+width="1540"
+height="967"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%965_hu15362157473637852580.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%965_hu11890605755738463202.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%966.png"
+width="1540"
+height="967"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%966_hu11823713887246163608.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%966_hu9152582477988559696.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>
+将任务栏发到下边居中
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%967.png"
+width="1540"
+height="967"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%967_hu17120290266090276789.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%967_hu14330580005274107695.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="159"
+data-flex-basis="382px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%968.png"
+width="1920"
+height="1080"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%968_hu12513630998025369809.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%968_hu11015558044663624436.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>
+有的人喜欢透明的terminal
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%969.png"
+width="1920"
+height="1080"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%969_hu13336276728572020943.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%969_hu8395843721746358690.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;h3 id="step4修改登录界面">step4：修改登录界面
+&lt;/h3>&lt;p>将下载的gdm themes文件解压之后进入运行install脚本即可
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9613.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9613_hu8771746783265462751.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9613_hu13364737276584697998.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>
+按照提示alt+f2应用我们所做的修改
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9614.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9614_hu2417604199779475857.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9614_hu15913058392387076080.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>
+查看一下效果
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9615.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9615_hu8812918483718188263.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9615_hu5405789510382348942.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>
+&lt;code>??这个背景怎么不太对？&lt;/code>下面将记录我解决这一问题的思路；通常我认为授人以鱼不如授人以渔，以前刚入门linux的时候遇到的问题就网上搜索解决方案，但网络上通常直接给出几条命令，至于为什么是这样修改的就不知道了；现在慢慢的熟悉了linux之后也渐渐的懂得了如何查找问题所在。&lt;/p>
+&lt;p>现在使用vim查看一线我们使用的安装脚本，就是那个install脚本&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">vim install.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9616.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9616_hu4543955284781419698.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9616_hu10952738686842241041.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>第一行我们可以看到它将文件下的一个.css文件复制到了/usr/share/gnome-shell/theme/ubuntu.css
+之前查找如何修改锁屏壁纸的时候总是需要去修改/etc/alternatives/gdm3.css的文件，其实这个文件就是连接到/usr/share/gnome-shell/theme/ubuntu.css的。就相当于是windows下的快捷方式一样
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9617.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9617_hu1184055074317833246.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9617_hu16254508305539486666.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>
+那么现在思路就清晰了，安装脚本替换了我们电脑上原本的按个.css样式文件，但是现在锁屏壁纸异常，那么我们查看gdm3.css文件下有关锁屏壁纸的那一部分就可以找到答案了，找到lockDialogGroup，可以看到background是一个url的本地链接，用文件打开到相应的目录并没有发现一个叫gdmlock.jpg的图片，那么现在应该清楚为什么显示异常了
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9618.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9618_hu12640092647257599005.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9618_hu6692303515819360136.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>
+修改一个自己喜欢的背景
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9619.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9619_hu15686177935009922631.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9619_hu9296851710731477312.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>
+问题解决
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9620.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9620_hu1463271118756170533.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E7%BE%8E%E5%8C%9620_hu17707036926527868483.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>&lt;/p>
+&lt;h3 id="step5安装zsh美化终端">step5：安装zsh美化终端
+&lt;/h3>&lt;p>&lt;a class="link" href="https://blog.csdn.net/sinat_38804294/article/details/90262473" target="_blank" rel="noopener"
+>参考链接1&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://ywnz.com/linuxmh/3190.html" target="_blank" rel="noopener"
+>参考链接2&lt;/a>&lt;/p>
+&lt;p>啥时候有空再自己写一个吧&lt;/p>
+&lt;h3 id="step6开机动画">step6：开机动画
+&lt;/h3>&lt;p>&lt;strong>经供参考，我自己也没成功233&lt;/strong>&lt;/p>
+&lt;p>虽然没有成功，单也做一个自己的学习记录吧，不知道是不是虚拟机的问题(如果哪位老哥虚拟机下能够修改成功还望能够分享一下)&lt;/p>
+&lt;p>将下载的plymouth theme解压到/usr/share/plymouth/themes目录下&lt;/p>
+&lt;p>执行命令&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">default.plymouth /usr/share/plymouth/themes/&lt;span class="s2">&amp;#34;path/to-your-plymouth.plymouth&amp;#34;&lt;/span> &lt;span class="m">100&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo update-initramfs -u &lt;span class="c1">#应用修改&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 也可以&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo update-alternatives --config default.plymouth
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其实主要修改的是
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%BC%80%E6%9C%BA%E5%8A%A8%E7%94%BB1.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%BC%80%E6%9C%BA%E5%8A%A8%E7%94%BB1_hu8713053159577861691.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%BC%80%E6%9C%BA%E5%8A%A8%E7%94%BB1_hu10523625751955994924.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>
+但是我修改之后发现没有ScriptFile字段&lt;em>可能这就是原因&lt;/em>(但是我下载的文件里本就没有.script文件&amp;hellip;后面再查一下资料吧)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%BC%80%E6%9C%BA%E5%8A%A8%E7%94%BB2.png"
+width="1365"
+height="971"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%BC%80%E6%9C%BA%E5%8A%A8%E7%94%BB2_hu13950905735548703266.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%BC%80%E6%9C%BA%E5%8A%A8%E7%94%BB2_hu13786864187635687021.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+>&lt;/p>
+&lt;h2 id="常见问题解决">常见问题解决
+&lt;/h2>&lt;h3 id="解决虚拟机窗口大小无法改变安装vmware-tools">解决虚拟机窗口大小无法改变(安装VMware tools)
+&lt;/h3>&lt;p>点击虚拟机-&amp;gt;安装VMware tools
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools1.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools1_hu16743242919882252990.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools1_hu18321947689294779276.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+此时桌面上出现了一个DVD光盘的图标，然后我们右键-&amp;gt;Open terminal 打开命令行(&lt;code>当你习惯命令行之后会发现命令行使用起来是如此的自然、简介、唯美&lt;/code>)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools2.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools2_hu12479050530350711866.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools2_hu7749700057975758916.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+emm&amp;hellip;这里看起来好像不是很清楚，我把我的命令列举并说明一下吧&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">lsblk &lt;span class="c1">#这个命令我就不说了 我一般拿来查看有哪些挂载点的 一般都会在/media目录下 其他的对于新手来说先不用管(其实我也不是很清楚)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /media/learning/VMware&lt;span class="se">\ &lt;/span>Tools/ &lt;span class="c1">#进入这个指定的目录 这个地方learning应该是你自己的用户名 tips:按tab键会自动补全&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls &lt;span class="c1">#查看当前目录下有哪些东西 看到红色的那个压缩包了没，那就是我们需要的东西了&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv VMwareTools-10.3.10-13959562.tar.gz ~ &lt;span class="c1">#将压缩包移动到我们账户的主目录下&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> ~ &lt;span class="c1">#进入我们的主目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls &lt;span class="c1">#查看当前目录下有哪些东西&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar -xf VMwareTools-10.3.10-13959562.tar.gz &lt;span class="c1">#将压缩包解压&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> vmware-tools-distrib/ &lt;span class="c1">#进入解压之后的文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls &lt;span class="c1">#查看当前目录下有哪些东西&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vmware-install.pl &lt;span class="c1"># 执行安装脚本开始安装 这个时候需要你输入密码(输入的密码是不可见的，你的键盘没坏)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#下面是不带注释的版本&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">lsblk
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /media/learning/VMware&lt;span class="se">\ &lt;/span>Tools/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv VMwareTools-10.3.10-13959562.tar.gz ~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> ~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar -xf VMwareTools-10.3.10-13959562.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> vmware-tools-distrib/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vmware-install.pl
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools3.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools3_hu15111428485283552438.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools3_hu18306499609236620387.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+开始安装之后一路回车下去就ok了(全选默认)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools4.png"
+width="1282"
+height="1002"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools4_hu11988615555598010165.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools4_hu1308735822970440981.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="307px"
+>
+然后就可以看到窗口完美的匹配上了
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools5.png"
+width="1351"
+height="984"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools5_hu13468515103680773743.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/vmtools5_hu6748392766382333633.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="329px"
+>&lt;/p>
+&lt;h3 id="解决安装软件慢的问题所谓的linux安装之后必做的事之一--换源">解决安装软件慢的问题(所谓的linux安装之后必做的事之一&amp;ndash;换源)
+&lt;/h3>&lt;p>大概说一下吧换源是个怎么回事吧(个人理解)：我们使用windows安装软件的时候都会去网上找资源然后下载，然而在linux里面当你使用命令行(当然你也可以像使用windows一样去网上找[有一些是不得不这么做])apt install 等命令安装东西的时候(你可以以为apt就是windows下的软件管家，[其实我就是这么以为的])它会去它的仓库找你要安装的软件然后下载下来给你装上，默认的仓库位置是国外的，所以下载的速度会非常非常非常慢，换源就是给它换个仓库的意思。下面开始进入正题:&lt;/p>
+&lt;p>再扯两句:linux下很多东西都是可以配置的，而这些配置规则有一个专门的文件来存储&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">cd /etc/apt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>可以看到有一个sources.list文件
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%901.png"
+width="1328"
+height="984"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%901_hu5999566430993140321.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%901_hu6197730014803600633.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="323px"
+>
+查看一下这个文件的内容是啥vi sources.list # vi 是vim的前身(可以看到有很多东西都是被注释掉的，#号开头的就是被注释掉的 那几个没有被注释掉的网址就是仓库的位置)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%902.png"
+width="1328"
+height="984"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%902_hu13573296194160409083.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%902_hu3123880938766412942.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="323px"
+>&lt;code>！！！！我怎么退出不了？？！！！自己去百度一下vi怎么退出！哈哈哈！！&lt;/code>&lt;/p>
+&lt;p>现在开始换源，换源之前先另存一份sudo mv sources.list sources.list.backup(后面有空再说sudo命令)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%903.png"
+width="1328"
+height="984"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%903_hu2457040834956993983.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%903_hu2279668586336527887.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="323px"
+>
+我比较喜欢用清华的源
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%904.png"
+width="928"
+height="684"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%904_hu953373531031930962.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%904_hu5471006914444489534.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="325px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%905.png"
+width="1384"
+height="764"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%905_hu3593428734639571601.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%905_hu2342966041559193998.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="434px"
+>
+如果安装了VMware tools还是无法拖动的话重启一下
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%906.png"
+width="1388"
+height="885"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%906_hu10268694706802821106.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%906_hu4119406505995588721.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="376px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%907.png"
+width="1393"
+height="849"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%907_hu12434200187581483250.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%907_hu10409527659293300390.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="164"
+data-flex-basis="393px"
+>
+右键-&amp;gt;Open Terminal ls查看一下当前目录，sudo mv Desktop/sources.list /etc/apt将桌面的sources.list文件移动到/etc/apt目录下，cd /etc/apt进入/etc/apt目录。ls查看一下当前目录发现sources.list是绿色的，sources.list原本不是绿色的现在它怎么能和原来不一样呢？？？作为一个追求完美的人是绝对无法忍受的，它是绿色的说明它拥有可执行权限，我把它的可执行权限给它拿掉就行了chmod a-x sources.list(拥有可执行权限就相当于是windows下的.exe)。ls 再次查看一下，嗯&amp;hellip;现在完美了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mv Desktop/sources.list /etc/apt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /etc/apt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chmod a-x sources.list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%908.png"
+width="1034"
+height="886"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%908_hu2247425846101692110.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8D%A2%E6%BA%908_hu17592169661810751700.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="116"
+data-flex-basis="280px"
+>&lt;/p>
+&lt;h3 id="安装pip3并更换源解决pip安装东西慢的问题">安装pip3并更换源(解决pip安装东西慢的问题)
+&lt;/h3>&lt;p>ubuntu默认是没有安装pip的(由于我主要使用python3，所以我只装pip3),安装完之后查看一下是否安装成功pip3 -V&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo apt install python3-pip
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pip3 -V
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%901.png"
+width="1117"
+height="963"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%901_hu1663401336558892371.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%901_hu12818951667868699396.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="115"
+data-flex-basis="278px"
+>下面更换pip源，让我们pip install的时候速度更快&lt;/p>
+&lt;ul>
+&lt;li>解决方法一
+&lt;a class="link" href="https://pypi.tuna.tsinghua.edu.cn/simple" target="_blank" rel="noopener"
+>https://pypi.tuna.tsinghua.edu.cn/simple&lt;/a>
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%902.png"
+width="1415"
+height="921"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%902_hu6200535915576365432.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%902_hu13406831858681199976.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="368px"
+>&lt;/li>
+&lt;li>解决方法二
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%903.png"
+width="1260"
+height="928"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%903_hu3564625691620145239.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%903_hu7775579364243599883.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="135"
+data-flex-basis="325px"
+>&lt;code>图片来自https://blog.csdn.net/qq_14994573/article/details/80934201&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>emm..亲测解决方法一不太行(貌似升级不行，我也不知道为啥)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%904.png"
+width="1104"
+height="963"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%904_hu12243950634234038628.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%904_hu9037701187947902585.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="275px"
+>那就来方法二
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%905.png"
+width="1040"
+height="883"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%905_hu13241473195469860148.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%905_hu2306995824209410922.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="282px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%906.png"
+width="1117"
+height="963"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%906_hu7277857002146346180.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%9B%B4%E6%8D%A2pip%E6%BA%906_hu533851631930797484.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="115"
+data-flex-basis="278px"
+>```bash
+cd ~
+ls -al #查看是否存在.pip文件夹
+mkdir .pip #创建.pip文件夹
+vim pip/pip.conf #自己百度下vim怎么用&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">改好之后试一下效果
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">![](更换pip源7.png)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">## 首次登陆怎么设置root用户？(首次登陆需要为root用户设置密码)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">输入命令sudo passwd然后输入你当前用户的密码(还记得每次使用sudo命令都要输当前用户密码吗？)然后就可以设置root用户的密码了，更改完了使用su root命令试试效果
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">```bash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo passwd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">su root
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">whoami
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E9%A6%96%E6%AC%A1%E4%BF%AE%E6%94%B9root%E5%AF%86%E7%A0%81.png"
+width="1040"
+height="883"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E9%A6%96%E6%AC%A1%E4%BF%AE%E6%94%B9root%E5%AF%86%E7%A0%81_hu7708731577130643028.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E9%A6%96%E6%AC%A1%E4%BF%AE%E6%94%B9root%E5%AF%86%E7%A0%81_hu15309508809306449205.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="117"
+data-flex-basis="282px"
+>&lt;/p>
+&lt;h3 id="挂载移动硬盘出现mountunknown-filesystem-type-exfat">挂载移动硬盘出现mount:unknown filesystem type &amp;rsquo;exfat'
+&lt;/h3>&lt;p>出现这个错误说明缺少对exfat文件系统的支持&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 搜索一下与exfat相关的东西&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt search exfat
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 可以看到exfat-fuse 是 对exfat文件系统的支持&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># read and write exFAT driver for FUSE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt install exfat-fuse
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装好了之后再重新挂载就ok了&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat1.png"
+width="1170"
+height="829"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat1_hu4360994997050425531.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat1_hu12960109211698384966.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="141"
+data-flex-basis="338px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat2.png"
+width="1148"
+height="835"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat2_hu12470666742837306706.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat2_hu14460718925187096416.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="137"
+data-flex-basis="329px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat3.png"
+width="1184"
+height="959"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat3_hu18314121333980494452.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98exfat3_hu9435345957399195888.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="296px"
+>&lt;/p>
+&lt;h2 id="安装杂七杂八的软件">安装杂七杂八的软件
+&lt;/h2>&lt;h3 id="安装gcc-g-python3-vim">安装gcc g++ python3 vim
+&lt;/h3>&lt;p>细细盘算一下作为一个计算机相关的精神小伙必不可少的有哪些东西呢？gcc g++ python vim&amp;hellip;先暂时安装这几个吧其它的后面再说(这个地方安装的是python2，python3 ubuntu18.04默认安装了的)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 废话不多说，直接一条命令搞定&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install gcc g++ python vim --yes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 当然你也可以&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># sudo apt install gcc&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># sudo apt install g++&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># sudo apt install python&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># sudo apt install vim&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>安装完了之后使用&amp;ndash;version参数查看是否安装成功
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython1.png"
+width="1034"
+height="886"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython1_hu12357968842817006742.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython1_hu13360334312651285751.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="116"
+data-flex-basis="280px"
+>
+作为一个精通helloworld的人，我飞快的写了一行helloworld并运行成功，顿时心潮澎湃热血上涌。
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython2.png"
+width="1034"
+height="886"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython2_hu3199804206523695983.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython2_hu11995462981660516461.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="116"
+data-flex-basis="280px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython3.png"
+width="1034"
+height="886"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython3_hu7432983647398885608.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/%E5%AE%89%E8%A3%85gccvimpython3_hu11869628267933115185.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="116"
+data-flex-basis="280px"
+>&lt;/p>
+&lt;h3 id="安装open-ssh并试用vscode远程编辑代码">安装open-ssh并试用vscode“远程”编辑代码
+&lt;/h3>&lt;p>说到这里其实当我们在terminal里面敲ssh之后按两下tab之后其实可以看到已经安装了一写ssh相关的软件，只不过我们要在外部连接到我们“主机”，那么自然就需要ssh server相关的东西，ubuntu并没有默认安装，搜索一下ssh-server，可以看到openssh-server正是我们要的东西，然后直接安装就行了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">apt search ssh-server
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt install openssh-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh2.png"
+width="1352"
+height="1014"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh2_hu16736061725466972626.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh2_hu2761313563114364985.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>
+安装完了查看一下是否在运行&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">service sshd status
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果没运行的话可以:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># service sshd start&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh3.png"
+width="1352"
+height="1014"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh3_hu9734712676550132876.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh3_hu17531614292939089540.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>
+下面我们用xshell连接试试，配置好相关信息我选择以root用户登录
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh4.png"
+width="1794"
+height="838"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh4_hu3429949489257727395.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh4_hu15293802813292599223.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="214"
+data-flex-basis="513px"
+>
+再疯狂的重试了输入root密码并确定没有输入错误后我决定查看一下登录日志，然鹅并没有看出什么东西密码不可能输错
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh5.png"
+width="1861"
+height="826"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh5_hu10129847929161695850.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh5_hu5241543863110210067.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="225"
+data-flex-basis="540px"
+>没办法我换个用户登录试试，TMD(实在忍不住爆句粗口)，成功了
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh6.png"
+width="1728"
+height="875"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh6_hu11385229280031760578.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh6_hu9562246067949389248.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+>
+下面再用vscode连接试试，这样可以方便写代码(貌似也没方便多少233，如果是连服务器的话倒是方便了很多)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh7.png"
+width="1920"
+height="1080"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh7_hu14232755185512083566.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh7_hu11075287645516811637.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh8.png"
+width="1920"
+height="1080"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh8_hu9061138387483706856.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh8_hu12499311476735346715.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh10.png"
+width="1920"
+height="1080"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh10_hu7107448742993010568.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh10_hu11393343349076840868.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh11.png"
+width="1833"
+height="957"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh11_hu13807864493830171588.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh11_hu15167307231417114809.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="459px"
+>选择一个文件保存配置的信息(就是你刚刚输入的用户名和地址)
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh12.png"
+width="960"
+height="1080"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh12_hu1048656281951719249.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh12_hu7174270423904202658.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="88"
+data-flex-basis="213px"
+>保存好了就可以连接了
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh13.png"
+width="960"
+height="1080"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh13_hu13843350394226031607.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh13_hu18081304652632075087.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="88"
+data-flex-basis="213px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh14.png"
+width="1280"
+height="960"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh14_hu1055220999108857563.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh14_hu6170734435742672457.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>连接好了之后可以打开文件看看
+&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh15.png"
+width="1280"
+height="960"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh15_hu12739888580797725242.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh15_hu10657404052654845522.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;img src="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh16.png"
+width="1392"
+height="960"
+srcset="https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh16_hu15160060394198358622.png 480w, https://nu11able.github.io/p/ubuntu%E5%AE%89%E8%A3%85%E5%8F%8A%E7%BE%8E%E5%8C%96/openssh16_hu16934498112837654468.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="348px"
+>&lt;/p></description></item></channel></rss>

@@ -1,0 +1,1105 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="c++协程原理 本文会先后介绍协程的关键字、使用方法以及它的原理，文章最后会给出一个例子来帮助加深理解。\nQ:协程被定义为“可中断”的函数，编译器是如何支持“可中断”这个操作的? 先提出本文最重要一个问题，答案会在后续的一个个子问题中得到解答，我认为解答了这个问题也就理解了协程的原理。\n"><title>c++协程原理</title>
+<link rel=canonical href=https://nu11able.github.io/p/c-%E5%8D%8F%E7%A8%8B%E5%8E%9F%E7%90%86/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="c++协程原理"><meta property='og:description' content="c++协程原理 本文会先后介绍协程的关键字、使用方法以及它的原理，文章最后会给出一个例子来帮助加深理解。\nQ:协程被定义为“可中断”的函数，编译器是如何支持“可中断”这个操作的? 先提出本文最重要一个问题，答案会在后续的一个个子问题中得到解答，我认为解答了这个问题也就理解了协程的原理。\n"><meta property='og:url' content='https://nu11able.github.io/p/c-%E5%8D%8F%E7%A8%8B%E5%8E%9F%E7%90%86/'><meta property='og:site_name' content='Nu11able'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='cpp'><meta property='article:tag' content='coroutine'><meta property='article:published_time' content='2024-12-11T00:00:00+00:00'><meta property='article:modified_time' content='2024-12-11T00:00:00+00:00'><meta name=twitter:title content="c++协程原理"><meta name=twitter:description content="c++协程原理 本文会先后介绍协程的关键字、使用方法以及它的原理，文章最后会给出一个例子来帮助加深理解。\nQ:协程被定义为“可中断”的函数，编译器是如何支持“可中断”这个操作的? 先提出本文最重要一个问题，答案会在后续的一个个子问题中得到解答，我认为解答了这个问题也就理解了协程的原理。\n"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu897059592634026878.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>Nu11able</a></h1><h2 class=site-description>闲看花开 静待花落 冷暖自知 干净如始</h2></div></header><ol class=menu-social><li><a href=https://github.com/Nu11able target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#q协程被定义为可中断的函数编译器是如何支持可中断这个操作的>Q:协程被定义为“可中断”的函数，编译器是如何支持“可中断”这个操作的?</a><ol><li><a href=#qc里面什么样的函数算是一个协程>Q:c++里面什么样的函数算是一个协程?</a></li><li><a href=#q协程函数的返回类型是什么>Q:协程函数的返回类型是什么?</a></li><li><a href=#未完待续>未完待续&mldr;&mldr;</a></li></ol></li><li><a href=#例子>例子</a><ol><li><a href=#这是一个协程的例子httpsdevdocsiocpplanguagecoroutines>这是一个协程的<a href=https://devdocs.io/cpp/language/coroutines>例子</a></a></li><li><a href=#经过cppinsightshttpscppinsightsio转化后>经过<a href=https://cppinsights.io/>cppinsights</a>转化后</a></li></ol></li><li><a href=#参考链接>参考链接</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/cpp/>Cpp</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/c-%E5%8D%8F%E7%A8%8B%E5%8E%9F%E7%90%86/>c++协程原理</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Dec 11, 2024</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><section class=article-content><h1 id=c协程原理>c++协程原理</h1><p>本文会先后介绍协程的关键字、使用方法以及它的原理，文章最后会给出一个例子来帮助加深理解。</p><h2 id=q协程被定义为可中断的函数编译器是如何支持可中断这个操作的>Q:协程被定义为“可中断”的函数，编译器是如何支持“可中断”这个操作的?</h2><p>先提出本文最重要一个问题，答案会在后续的一个个子问题中得到解答，我认为解答了这个问题也就理解了协程的原理。</p><h3 id=qc里面什么样的函数算是一个协程>Q:c++里面什么样的函数算是一个协程?</h3><p>函数中含有以下关键字</p><ul><li>co_await</li><li>co_yield</li><li>co_return
+其中 co_yield和co_return都是用来返回值的，co_await是用来等待异步操作的(另一个协程)。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=kt>int</span> <span class=nf>example</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>co_yield</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>co_yield</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>co_yield</span> <span class=mi>3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>co_return</span> <span class=mi>4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>auto</span> <span class=n>ret</span> <span class=o>=</span> <span class=n>example</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 此时ret是一个int类型的值，值为1  我如何恢复example的执行?
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>实际上诉的代码并不能够通过编译，一个协程函数的返回类型应该是一个<code>协程类型</code>，而不是一个普通的类型。</p><h3 id=q协程函数的返回类型是什么>Q:协程函数的返回类型是什么?</h3><p>在此需要先提出三个概念</p><ul><li><p>协程promise(the promise object)</p><blockquote><p>manipulated from inside the coroutine. The coroutine submits its result or exception through this object. Promise objects are in no way related to std::promise.</p></blockquote><p>promise是一个对象，但是它和std::promise没有任何关系。</p></li><li><p>协程帧(coroutine state)
+协程帧是由编译器生成(一个由编译器生成的类型)，它(的成员变量)包含了协程的状态信息，比如协程的参数、当前执行位置，协程的promise对象等。</p></li><li><p>协程句柄(coroutine handle)</p><blockquote><p>manipulated from outside the coroutine. This is a non-owning handle used to resume execution of the coroutine or to destroy the coroutine frame.</p></blockquote><p>句柄是一个对象，它用来恢复协程的执行或者销毁协程帧。它内部拥有一个指向协程帧的指针。</p></li></ul><p>协程函数的返回类型、协程的执行结果都是由promise对象提供。在此先给出一部分promise的定义</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>struct</span> <span class=nc>promise_type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>return_type</span> <span class=nf>get_return_object</span><span class=p>();</span> <span class=c1>// return_type即为协程函数的返回类型
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>return_type和promise_type都由用户自行定义，但是promise_type必须包含一个get_return_object方法，这个方法返回一个return_type类型的对象。且return_type必须含有一个promise_type类型。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>struct</span> <span class=nc>return_type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>promise_type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>return_type</span> <span class=nf>get_return_object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>return_type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>using</span> <span class=n>promise_type</span> <span class=o>=</span> <span class=o>::</span><span class=n>promise_type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 当然你也可以这样定义
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>struct</span> <span class=nc>return_type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>promise_type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>return_type</span> <span class=nf>get_return_object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>由此我们得到了协程函数的返回类型，但还远远不够。再继续下去之前我们需要先了解编译器协程的执行流程。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// 协程帧结构(由编译器生成)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>struct</span> <span class=nc>coroutine_state</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>promise_type</span> <span class=n>promise</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// other members
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li><ol><li>使用<code>operator new</code>分配一个协程帧的内存</li></ol></li><li><ol start=2><li>将所有参数拷贝到协程帧</li></ol></li><li><ol start=3><li>调用promise_type的构造函数</li></ol></li><li><ol start=4><li>调用promise_type的get_return_object方法，将结果并保存为本地变量，以便后续返回</li></ol></li><li><ol start=5><li>调用promise_type的initial_suspend方法并等待它的结果(<code>co_await promise.initial_suspend()</code>)</li></ol></li><li><ol start=6><li>当<code>co_await promise.initial_suspend()</code>恢复之后开始执行协程函数</li></ol></li></ul><h3 id=未完待续>未完待续&mldr;&mldr;</h3><h2 id=例子>例子</h2><h3 id=这是一个协程的例子httpsdevdocsiocpplanguagecoroutines>这是一个协程的<a class=link href=https://devdocs.io/cpp/language/coroutines target=_blank rel=noopener>例子</a></h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;coroutine&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cstdint&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;exception&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span> 
+</span></span><span class=line><span class=cl><span class=k>template</span><span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>Generator</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// The class name &#39;Generator&#39; is our choice and it is not required for coroutine
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// magic. Compiler recognizes coroutine by the presence of &#39;co_yield&#39; keyword.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// You can use name &#39;MyGenerator&#39; (or any other name) instead as long as you include
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// nested struct promise_type with &#39;MyGenerator get_return_object()&#39; method.
+</span></span></span><span class=line><span class=cl><span class=c1></span> 
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>promise_type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>using</span> <span class=n>handle_type</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>promise_type</span><span class=o>&gt;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>promise_type</span> <span class=c1>// required
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>T</span> <span class=n>value_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>exception_ptr</span> <span class=n>exception_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>        <span class=n>Generator</span> <span class=nf>get_return_object</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>Generator</span><span class=p>(</span><span class=n>handle_type</span><span class=o>::</span><span class=n>from_promise</span><span class=p>(</span><span class=o>*</span><span class=k>this</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>initial_suspend</span><span class=p>()</span> <span class=p>{</span> <span class=k>return</span> <span class=p>{};</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>final_suspend</span><span class=p>()</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=p>{};</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kt>void</span> <span class=nf>unhandled_exception</span><span class=p>()</span> <span class=p>{</span> <span class=n>exception_</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>current_exception</span><span class=p>();</span> <span class=p>}</span> <span class=c1>// saving
+</span></span></span><span class=line><span class=cl><span class=c1></span>                                                                              <span class=c1>// exception
+</span></span></span><span class=line><span class=cl><span class=c1></span> 
+</span></span><span class=line><span class=cl>        <span class=k>template</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=n>convertible_to</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>From</span><span class=o>&gt;</span> <span class=c1>// C++20 concept
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>yield_value</span><span class=p>(</span><span class=n>From</span><span class=o>&amp;&amp;</span> <span class=n>from</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>value_</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>forward</span><span class=o>&lt;</span><span class=n>From</span><span class=o>&gt;</span><span class=p>(</span><span class=n>from</span><span class=p>);</span> <span class=c1>// caching the result in promise
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kt>void</span> <span class=nf>return_void</span><span class=p>()</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=n>handle_type</span> <span class=n>h_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=n>Generator</span><span class=p>(</span><span class=n>handle_type</span> <span class=n>h</span><span class=p>)</span> <span class=o>:</span> <span class=n>h_</span><span class=p>(</span><span class=n>h</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>    <span class=o>~</span><span class=n>Generator</span><span class=p>()</span> <span class=p>{</span> <span class=n>h_</span><span class=p>.</span><span class=n>destroy</span><span class=p>();</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>explicit</span> <span class=k>operator</span> <span class=nf>bool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>fill</span><span class=p>();</span> <span class=c1>// The only way to reliably find out whether or not we finished coroutine,
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// whether or not there is going to be a next value generated (co_yield)
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// in coroutine via C++ getter (operator () below) is to execute/resume
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// coroutine until the next co_yield point (or let it fall off end).
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// Then we store/cache result in promise to allow getter (operator() below
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=c1>// to grab it without executing coroutine).
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>return</span> <span class=o>!</span><span class=n>h_</span><span class=p>.</span><span class=n>done</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>T</span> <span class=nf>operator</span><span class=p>()()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>fill</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>full_</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span> <span class=c1>// we are going to move out previously cached
+</span></span></span><span class=line><span class=cl><span class=c1></span>                       <span class=c1>// result to make promise empty again
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>return</span> <span class=n>std</span><span class=o>::</span><span class=n>move</span><span class=p>(</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>value_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>full_</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>fill</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=n>full_</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>h_</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>exception_</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>std</span><span class=o>::</span><span class=n>rethrow_exception</span><span class=p>(</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>exception_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// propagate coroutine exception in called context
+</span></span></span><span class=line><span class=cl><span class=c1></span> 
+</span></span><span class=line><span class=cl>            <span class=n>full_</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=n>Generator</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=kt>uint64_t</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=n>fibonacci_sequence</span><span class=p>(</span><span class=kt>unsigned</span> <span class=n>n</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>co_return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>&gt;</span> <span class=mi>94</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>throw</span> <span class=n>std</span><span class=o>::</span><span class=n>runtime_error</span><span class=p>(</span><span class=s>&#34;Too big Fibonacci sequence. Elements would overflow.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=k>co_yield</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>co_return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=k>co_yield</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>==</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>co_return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=kt>uint64_t</span> <span class=n>a</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=kt>uint64_t</span> <span class=n>b</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=kt>uint64_t</span> <span class=n>s</span> <span class=o>=</span> <span class=n>a</span> <span class=o>+</span> <span class=n>b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>co_yield</span> <span class=n>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>a</span> <span class=o>=</span> <span class=n>b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>b</span> <span class=o>=</span> <span class=n>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>try</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>auto</span> <span class=n>gen</span> <span class=o>=</span> <span class=n>fibonacci_sequence</span><span class=p>(</span><span class=mi>10</span><span class=p>);</span> <span class=c1>// max 94 before uint64_t overflows
+</span></span></span><span class=line><span class=cl><span class=c1></span> 
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>gen</span><span class=p>;</span> <span class=o>++</span><span class=n>j</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;fib(&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>j</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;)=&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>gen</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=sc>&#39;\n&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>catch</span> <span class=p>(</span><span class=k>const</span> <span class=n>std</span><span class=o>::</span><span class=n>exception</span><span class=o>&amp;</span> <span class=n>ex</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cerr</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Exception: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>ex</span><span class=p>.</span><span class=n>what</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=sc>&#39;\n&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>catch</span> <span class=p>(...)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cerr</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Unknown exception.</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=经过cppinsightshttpscppinsightsio转化后>经过<a class=link href=https://cppinsights.io/ target=_blank rel=noopener>cppinsights</a>转化后</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span><span class=lnt>265
+</span><span class=lnt>266
+</span><span class=lnt>267
+</span><span class=lnt>268
+</span><span class=lnt>269
+</span><span class=lnt>270
+</span><span class=lnt>271
+</span><span class=lnt>272
+</span><span class=lnt>273
+</span><span class=lnt>274
+</span><span class=lnt>275
+</span><span class=lnt>276
+</span><span class=lnt>277
+</span><span class=lnt>278
+</span><span class=lnt>279
+</span><span class=lnt>280
+</span><span class=lnt>281
+</span><span class=lnt>282
+</span><span class=lnt>283
+</span><span class=lnt>284
+</span><span class=lnt>285
+</span><span class=lnt>286
+</span><span class=lnt>287
+</span><span class=lnt>288
+</span><span class=lnt>289
+</span><span class=lnt>290
+</span><span class=lnt>291
+</span><span class=lnt>292
+</span><span class=lnt>293
+</span><span class=lnt>294
+</span><span class=lnt>295
+</span><span class=lnt>296
+</span><span class=lnt>297
+</span><span class=lnt>298
+</span><span class=lnt>299
+</span><span class=lnt>300
+</span><span class=lnt>301
+</span><span class=lnt>302
+</span><span class=lnt>303
+</span><span class=lnt>304
+</span><span class=lnt>305
+</span><span class=lnt>306
+</span><span class=lnt>307
+</span><span class=lnt>308
+</span><span class=lnt>309
+</span><span class=lnt>310
+</span><span class=lnt>311
+</span><span class=lnt>312
+</span><span class=lnt>313
+</span><span class=lnt>314
+</span><span class=lnt>315
+</span><span class=lnt>316
+</span><span class=lnt>317
+</span><span class=lnt>318
+</span><span class=lnt>319
+</span><span class=lnt>320
+</span><span class=lnt>321
+</span><span class=lnt>322
+</span><span class=lnt>323
+</span><span class=lnt>324
+</span><span class=lnt>325
+</span><span class=lnt>326
+</span><span class=lnt>327
+</span><span class=lnt>328
+</span><span class=lnt>329
+</span><span class=lnt>330
+</span><span class=lnt>331
+</span><span class=lnt>332
+</span><span class=lnt>333
+</span><span class=lnt>334
+</span><span class=lnt>335
+</span><span class=lnt>336
+</span><span class=lnt>337
+</span><span class=lnt>338
+</span><span class=lnt>339
+</span><span class=lnt>340
+</span><span class=lnt>341
+</span><span class=lnt>342
+</span><span class=lnt>343
+</span><span class=lnt>344
+</span><span class=lnt>345
+</span><span class=lnt>346
+</span><span class=lnt>347
+</span><span class=lnt>348
+</span><span class=lnt>349
+</span><span class=lnt>350
+</span><span class=lnt>351
+</span><span class=lnt>352
+</span><span class=lnt>353
+</span><span class=lnt>354
+</span><span class=lnt>355
+</span><span class=lnt>356
+</span><span class=lnt>357
+</span><span class=lnt>358
+</span><span class=lnt>359
+</span><span class=lnt>360
+</span><span class=lnt>361
+</span><span class=lnt>362
+</span><span class=lnt>363
+</span><span class=lnt>364
+</span><span class=lnt>365
+</span><span class=lnt>366
+</span><span class=lnt>367
+</span><span class=lnt>368
+</span><span class=lnt>369
+</span><span class=lnt>370
+</span><span class=lnt>371
+</span><span class=lnt>372
+</span><span class=lnt>373
+</span><span class=lnt>374
+</span><span class=lnt>375
+</span><span class=lnt>376
+</span><span class=lnt>377
+</span><span class=lnt>378
+</span><span class=lnt>379
+</span><span class=lnt>380
+</span><span class=lnt>381
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cm>/*************************************************************************************
+</span></span></span><span class=line><span class=cl><span class=cm> * NOTE: The coroutine transformation you&#39;ve enabled is a hand coded transformation! *
+</span></span></span><span class=line><span class=cl><span class=cm> *       Most of it is _not_ present in the AST. What you see is an approximation.   *
+</span></span></span><span class=line><span class=cl><span class=cm> *************************************************************************************/</span>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;coroutine&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cstdint&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;exception&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>template</span><span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>Generator</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=nc>promise_type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>using</span> <span class=n>handle_type</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>promise_type</span><span class=o>&gt;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=nc>promise_type</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>T</span> <span class=n>value_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>exception_ptr</span> <span class=n>exception_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>Generator</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>get_return_object</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=n>Generator</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span><span class=p>(</span><span class=n>handle_type</span><span class=o>::</span><span class=n>from_promise</span><span class=p>(</span><span class=o>*</span><span class=k>this</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>initial_suspend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>final_suspend</span><span class=p>()</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=kt>void</span> <span class=nf>unhandled_exception</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>exception_</span><span class=p>.</span><span class=k>operator</span><span class=o>=</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>current_exception</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>template</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=n>convertible_to</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>From</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>yield_value</span><span class=p>(</span><span class=n>From</span> <span class=o>&amp;&amp;</span> <span class=n>from</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>value_</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>forward</span><span class=o>&lt;</span><span class=n>From</span><span class=o>&gt;</span><span class=p>(</span><span class=n>from</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=kt>void</span> <span class=nf>return_void</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>  <span class=p>};</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=n>handle_type</span> <span class=n>h_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=nf>Generator</span><span class=p>(</span><span class=n>handle_type</span> <span class=n>h</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>:</span> <span class=n>h_</span><span class=p>(</span><span class=n>h</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=o>~</span><span class=n>Generator</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>destroy</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=k>explicit</span> <span class=k>operator</span> <span class=nf>bool</span> <span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>fill</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>!</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>done</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=n>T</span> <span class=nf>operator</span><span class=p>()()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>fill</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>full_</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>std</span><span class=o>::</span><span class=n>move</span><span class=p>(</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>value_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=k>private</span><span class=o>:</span> 
+</span></span><span class=line><span class=cl>  <span class=kt>bool</span> <span class=n>full_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=kt>void</span> <span class=nf>fill</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>full_</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span><span class=p>(</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>exception_</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>rethrow_exception</span><span class=p>(</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>exception_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span> 
+</span></span><span class=line><span class=cl>      
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>full_</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/* First instantiated from: insights.cpp:80 */</span>
+</span></span><span class=line><span class=cl><span class=cp>#ifdef INSIGHTS_USE_TEMPLATE
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>template</span><span class=o>&lt;&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=nc>promise_type</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>unsigned</span> <span class=kt>long</span> <span class=n>value_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>exception_ptr</span> <span class=n>exception_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span> <span class=n>get_return_object</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span><span class=p>(</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>promise_type</span><span class=o>&gt;::</span><span class=n>from_promise</span><span class=p>(</span><span class=o>*</span><span class=k>this</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>initial_suspend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>final_suspend</span><span class=p>()</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=kt>void</span> <span class=nf>unhandled_exception</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>exception_</span><span class=p>.</span><span class=k>operator</span><span class=o>=</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>current_exception</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>template</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=n>convertible_to</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>From</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>yield_value</span><span class=p>(</span><span class=n>From</span> <span class=o>&amp;&amp;</span> <span class=n>from</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cm>/* First instantiated from: insights.cpp:88 */</span>
+</span></span><span class=line><span class=cl>    <span class=cp>#ifdef INSIGHTS_USE_TEMPLATE
+</span></span></span><span class=line><span class=cl><span class=cp></span>    <span class=k>template</span><span class=o>&lt;&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>yield_value</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=kt>int</span> <span class=o>&amp;&amp;</span> <span class=n>from</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>value_</span> <span class=o>=</span> <span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>forward</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=n>from</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=cp>#endif
+</span></span></span><span class=line><span class=cl><span class=cp></span>    
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cm>/* First instantiated from: insights.cpp:104 */</span>
+</span></span><span class=line><span class=cl>    <span class=cp>#ifdef INSIGHTS_USE_TEMPLATE
+</span></span></span><span class=line><span class=cl><span class=cp></span>    <span class=k>template</span><span class=o>&lt;&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>yield_value</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=o>&amp;&gt;</span><span class=p>(</span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=o>&amp;</span> <span class=n>from</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>value_</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>forward</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=o>&amp;&gt;</span><span class=p>(</span><span class=n>from</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=cp>#endif
+</span></span></span><span class=line><span class=cl><span class=cp></span>    
+</span></span><span class=line><span class=cl>    <span class=kr>inline</span> <span class=kt>void</span> <span class=nf>return_void</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// inline ~promise_type() noexcept = default;
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>};</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=k>using</span> <span class=n>handle_type</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>promise_type</span><span class=o>&gt;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>struct</span> <span class=nc>promise_type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>promise_type</span><span class=o>&gt;</span> <span class=n>h_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=nf>Generator</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>promise_type</span><span class=o>&gt;</span> <span class=n>h</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>:</span> <span class=n>h_</span><span class=p>{</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>promise_type</span><span class=o>&gt;</span><span class=p>(</span><span class=n>h</span><span class=p>)}</span>
+</span></span><span class=line><span class=cl>  <span class=p>,</span> <span class=n>full_</span><span class=p>{</span><span class=nb>false</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=o>~</span><span class=n>Generator</span><span class=p>()</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>destroy</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=k>explicit</span> <span class=k>operator</span> <span class=nf>bool</span> <span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>fill</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>!</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>done</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=kt>unsigned</span> <span class=kt>long</span> <span class=nf>operator</span><span class=p>()()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>fill</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>full_</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>std</span><span class=o>::</span><span class=n>move</span><span class=p>(</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>value_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=k>private</span><span class=o>:</span> 
+</span></span><span class=line><span class=cl>  <span class=kt>bool</span> <span class=n>full_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kr>inline</span> <span class=kt>void</span> <span class=nf>fill</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>full_</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=k>operator</span><span class=p>()();</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span><span class=p>(</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>exception_</span><span class=p>.</span><span class=k>operator</span> <span class=kt>bool</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>rethrow_exception</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>__exception_ptr</span><span class=o>::</span><span class=n>exception_ptr</span><span class=p>(</span><span class=k>this</span><span class=o>-&gt;</span><span class=n>h_</span><span class=p>.</span><span class=n>promise</span><span class=p>().</span><span class=n>exception_</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span> 
+</span></span><span class=line><span class=cl>      
+</span></span><span class=line><span class=cl>      <span class=k>this</span><span class=o>-&gt;</span><span class=n>full_</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=k>public</span><span class=o>:</span> 
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cp>#endif
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>__fibonacci_sequenceFrame</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>void</span> <span class=p>(</span><span class=o>*</span><span class=n>resume_fn</span><span class=p>)(</span><span class=n>__fibonacci_sequenceFrame</span> <span class=o>*</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>void</span> <span class=p>(</span><span class=o>*</span><span class=n>destroy_fn</span><span class=p>)(</span><span class=n>__fibonacci_sequenceFrame</span> <span class=o>*</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>__coroutine_traits_impl</span><span class=o>&lt;</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span> <span class=o>&gt;::</span><span class=n>promise_type</span> <span class=n>__promise</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>__suspend_index</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>bool</span> <span class=n>__initial_await_suspend_called</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>n</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=kt>uint64_t</span> <span class=n>a</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=kt>uint64_t</span> <span class=n>b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=kt>uint64_t</span> <span class=n>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>__suspend_80_1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>__suspend_88_5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>__suspend_93_5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>__suspend_104_9</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>std</span><span class=o>::</span><span class=n>suspend_always</span> <span class=n>__suspend_80_1_1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span> <span class=n>fibonacci_sequence</span><span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>n</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=cm>/* Allocate the frame including the promise */</span>
+</span></span><span class=line><span class=cl>  <span class=cm>/* Note: The actual parameter new is __builtin_coro_size */</span>
+</span></span><span class=line><span class=cl>  <span class=n>__fibonacci_sequenceFrame</span> <span class=o>*</span> <span class=n>__f</span> <span class=o>=</span> <span class=k>reinterpret_cast</span><span class=o>&lt;</span><span class=n>__fibonacci_sequenceFrame</span> <span class=o>*&gt;</span><span class=p>(</span><span class=k>operator</span> <span class=k>new</span><span class=p>(</span><span class=k>sizeof</span><span class=p>(</span><span class=n>__fibonacci_sequenceFrame</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_index</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__initial_await_suspend_called</span> <span class=o>=</span> <span class=nb>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;</span><span class=n>n</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>forward</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* Construct the promise. */</span>
+</span></span><span class=line><span class=cl>  <span class=k>new</span> <span class=p>(</span><span class=o>&amp;</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>)</span><span class=n>std</span><span class=o>::</span><span class=n>__coroutine_traits_impl</span><span class=o>&lt;</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span> <span class=o>&gt;::</span><span class=n>promise_type</span><span class=p>{};</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* Forward declare the resume and destroy function. */</span>
+</span></span><span class=line><span class=cl>  <span class=kt>void</span> <span class=nf>__fibonacci_sequenceResume</span><span class=p>(</span><span class=n>__fibonacci_sequenceFrame</span> <span class=o>*</span> <span class=n>__f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>void</span> <span class=nf>__fibonacci_sequenceDestroy</span><span class=p>(</span><span class=n>__fibonacci_sequenceFrame</span> <span class=o>*</span> <span class=n>__f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* Assign the resume and destroy function pointers. */</span>
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;</span><span class=n>resume_fn</span> <span class=o>=</span> <span class=o>&amp;</span><span class=n>__fibonacci_sequenceResume</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;</span><span class=n>destroy_fn</span> <span class=o>=</span> <span class=o>&amp;</span><span class=n>__fibonacci_sequenceDestroy</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* Call the made up function with the coroutine body for initial suspend.
+</span></span></span><span class=line><span class=cl><span class=cm>     This function will be called subsequently by coroutine_handle&lt;&gt;::resume()
+</span></span></span><span class=line><span class=cl><span class=cm>     which calls __builtin_coro_resume(__handle_) */</span>
+</span></span><span class=line><span class=cl>  <span class=n>__fibonacci_sequenceResume</span><span class=p>(</span><span class=n>__f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>get_return_object</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/* This function invoked by coroutine_handle&lt;&gt;::resume() */</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>__fibonacci_sequenceResume</span><span class=p>(</span><span class=n>__fibonacci_sequenceFrame</span> <span class=o>*</span> <span class=n>__f</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>try</span> 
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* Create a switch to get to the correct resume point */</span>
+</span></span><span class=line><span class=cl>    <span class=k>switch</span><span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_index</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>case</span> <span class=mi>0</span><span class=o>:</span> <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>case</span> <span class=mi>1</span><span class=o>:</span> <span class=k>goto</span> <span class=n>__resume_fibonacci_sequence_1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>case</span> <span class=mi>2</span><span class=o>:</span> <span class=k>goto</span> <span class=n>__resume_fibonacci_sequence_2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>case</span> <span class=mi>3</span><span class=o>:</span> <span class=k>goto</span> <span class=n>__resume_fibonacci_sequence_3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>case</span> <span class=mi>4</span><span class=o>:</span> <span class=k>goto</span> <span class=n>__resume_fibonacci_sequence_4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cm>/* co_await insights.cpp:80 */</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_80_1</span> <span class=o>=</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>initial_suspend</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_80_1</span><span class=p>.</span><span class=n>await_ready</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_80_1</span><span class=p>.</span><span class=n>await_suspend</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;::</span><span class=n>promise_type</span><span class=o>&gt;::</span><span class=n>from_address</span><span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>void</span> <span class=o>*&gt;</span><span class=p>(</span><span class=n>__f</span><span class=p>)).</span><span class=k>operator</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=kt>void</span><span class=o>&gt;</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_index</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__initial_await_suspend_called</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nl>__resume_fibonacci_sequence_1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_80_1</span><span class=p>.</span><span class=n>await_resume</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>n</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=cm>/* co_return insights.cpp:83 */</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>return_void</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>n</span> <span class=o>&gt;</span> <span class=mi>94</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>throw</span> <span class=n>std</span><span class=o>::</span><span class=n>runtime_error</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>runtime_error</span><span class=p>(</span><span class=s>&#34;Too big Fibonacci sequence. Elements would overflow.&#34;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cm>/* co_yield insights.cpp:88 */</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_88_5</span> <span class=o>=</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>yield_value</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_88_5</span><span class=p>.</span><span class=n>await_ready</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_88_5</span><span class=p>.</span><span class=n>await_suspend</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;::</span><span class=n>promise_type</span><span class=o>&gt;::</span><span class=n>from_address</span><span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>void</span> <span class=o>*&gt;</span><span class=p>(</span><span class=n>__f</span><span class=p>)).</span><span class=k>operator</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=kt>void</span><span class=o>&gt;</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_index</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nl>__resume_fibonacci_sequence_2</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_88_5</span><span class=p>.</span><span class=n>await_resume</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>n</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=cm>/* co_return insights.cpp:91 */</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>return_void</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cm>/* co_yield insights.cpp:93 */</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_93_5</span> <span class=o>=</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>yield_value</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_93_5</span><span class=p>.</span><span class=n>await_ready</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_93_5</span><span class=p>.</span><span class=n>await_suspend</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;::</span><span class=n>promise_type</span><span class=o>&gt;::</span><span class=n>from_address</span><span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>void</span> <span class=o>*&gt;</span><span class=p>(</span><span class=n>__f</span><span class=p>)).</span><span class=k>operator</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=kt>void</span><span class=o>&gt;</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_index</span> <span class=o>=</span> <span class=mi>3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nl>__resume_fibonacci_sequence_3</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_93_5</span><span class=p>.</span><span class=n>await_resume</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>n</span> <span class=o>==</span> <span class=mi>2</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=cm>/* co_return insights.cpp:96 */</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>return_void</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>a</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>b</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>i</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>i</span> <span class=o>&lt;</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>s</span> <span class=o>=</span> <span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>a</span> <span class=o>+</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>b</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      
+</span></span><span class=line><span class=cl>      <span class=cm>/* co_yield insights.cpp:104 */</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_104_9</span> <span class=o>=</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>yield_value</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span> <span class=o>&amp;&gt;</span><span class=p>(</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>s</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_104_9</span><span class=p>.</span><span class=n>await_ready</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_104_9</span><span class=p>.</span><span class=n>await_suspend</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;::</span><span class=n>promise_type</span><span class=o>&gt;::</span><span class=n>from_address</span><span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>void</span> <span class=o>*&gt;</span><span class=p>(</span><span class=n>__f</span><span class=p>)).</span><span class=k>operator</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=kt>void</span><span class=o>&gt;</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>        <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_index</span> <span class=o>=</span> <span class=mi>4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span> 
+</span></span><span class=line><span class=cl>      
+</span></span><span class=line><span class=cl>      <span class=nl>__resume_fibonacci_sequence_4</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_104_9</span><span class=p>.</span><span class=n>await_resume</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>a</span> <span class=o>=</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>__f</span><span class=o>-&gt;</span><span class=n>b</span> <span class=o>=</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>goto</span> <span class=n>__final_suspend</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>catch</span><span class=p>(...)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__initial_await_suspend_called</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>throw</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> 
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>unhandled_exception</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=nl>__final_suspend</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=cm>/* co_await insights.cpp:80 */</span>
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_80_1_1</span> <span class=o>=</span> <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__promise</span><span class=p>.</span><span class=n>final_suspend</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span><span class=p>(</span><span class=o>!</span><span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_80_1_1</span><span class=p>.</span><span class=n>await_ready</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>__f</span><span class=o>-&gt;</span><span class=n>__suspend_80_1_1</span><span class=p>.</span><span class=n>await_suspend</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;::</span><span class=n>promise_type</span><span class=o>&gt;::</span><span class=n>from_address</span><span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>void</span> <span class=o>*&gt;</span><span class=p>(</span><span class=n>__f</span><span class=p>)).</span><span class=k>operator</span> <span class=n>std</span><span class=o>::</span><span class=n>coroutine_handle</span><span class=o>&lt;</span><span class=kt>void</span><span class=o>&gt;</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> 
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;</span><span class=n>destroy_fn</span><span class=p>(</span><span class=n>__f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/* This function invoked by coroutine_handle&lt;&gt;::destroy() */</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>__fibonacci_sequenceDestroy</span><span class=p>(</span><span class=n>__fibonacci_sequenceFrame</span> <span class=o>*</span> <span class=n>__f</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=cm>/* destroy all variables with dtors */</span>
+</span></span><span class=line><span class=cl>  <span class=n>__f</span><span class=o>-&gt;~</span><span class=n>__fibonacci_sequenceFrame</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=cm>/* Deallocating the coroutine frame */</span>
+</span></span><span class=line><span class=cl>  <span class=cm>/* Note: The actual argument to delete is __builtin_coro_frame with the promise as parameter */</span>
+</span></span><span class=line><span class=cl>  <span class=k>operator</span> <span class=k>delete</span><span class=p>(</span><span class=k>static_cast</span><span class=o>&lt;</span><span class=kt>void</span> <span class=o>*&gt;</span><span class=p>(</span><span class=n>__f</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>try</span> 
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>Generator</span><span class=o>&lt;</span><span class=kt>unsigned</span> <span class=kt>long</span><span class=o>&gt;</span> <span class=n>gen</span> <span class=o>=</span> <span class=n>fibonacci_sequence</span><span class=p>(</span><span class=mi>10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>gen</span><span class=p>.</span><span class=k>operator</span> <span class=kt>bool</span><span class=p>();</span> <span class=o>++</span><span class=n>j</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>std</span><span class=o>::</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>cout</span><span class=p>,</span> <span class=s>&#34;fib(&#34;</span><span class=p>).</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>j</span><span class=p>),</span> <span class=s>&#34;)=&#34;</span><span class=p>).</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>gen</span><span class=p>.</span><span class=k>operator</span><span class=p>()()),</span> <span class=sc>&#39;\n&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>catch</span><span class=p>(</span><span class=k>const</span> <span class=n>std</span><span class=o>::</span><span class=n>exception</span> <span class=o>&amp;</span> <span class=n>ex</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>cerr</span><span class=p>,</span> <span class=s>&#34;Exception: &#34;</span><span class=p>),</span> <span class=n>ex</span><span class=p>.</span><span class=n>what</span><span class=p>()),</span> <span class=sc>&#39;\n&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>catch</span><span class=p>(...)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=k>operator</span><span class=o>&lt;&lt;</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>cerr</span><span class=p>,</span> <span class=s>&#34;Unknown exception.</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=参考链接>参考链接</h2><p><a class=link href=https://en.cppreference.com/w/cpp/language/coroutines target=_blank rel=noopener>Coroutines</a></p></section><footer class=article-footer><section class=article-tags><a href=/tags/cpp/>Cpp</a>
+<a href=/tags/coroutine/>Coroutine</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><script src=https://giscus.app/client.js data-repo=Nu11able/Nu11able.github.io data-repo-id=R_kgDOMgdR-g data-category=Announcements data-category-id=DIC_kwDOMgdR-s4Chh7m data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=light data-lang=en-us data-loading crossorigin=anonymous async></script><script>function setGiscusTheme(e){let t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:{setConfig:{theme:e}}},"https://giscus.app")}(function(){addEventListener("message",t=>{if(event.origin!=="https://giscus.app")return;e()}),window.addEventListener("onColorSchemeChange",e);function e(){setGiscusTheme(document.documentElement.dataset.scheme==="light"?"light":"dark_dimmed")}})()</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2024 Nu11able</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.29.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Asm on Nu11able</title><link>https://nu11able.github.io/tags/asm/</link><description>Recent content in Asm on Nu11able</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 23 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://nu11able.github.io/tags/asm/index.xml" rel="self" type="application/rss+xml"/><item><title>asm</title><link>https://nu11able.github.io/p/asm/</link><pubDate>Wed, 23 Feb 2022 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/asm/</guid><description>&lt;h1 id="tips">Tips
+&lt;/h1>&lt;ul>
+&lt;li>
+&lt;p>cpu对各个部件的控制其实就是对各部件的内存地址空间进行数据的读写&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>8086CPU有14个寄存器AX,BX,CX,DX,SI,DI,SP,BP,IP,CS,SS,DS,ES,PSW(flag寄存器)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>8086CPU有20位地址总线，但其又是16位结构，所以地址加法器采用&lt;strong>物理地址=段地址*16+偏移地址&lt;/strong>(我们所看到的数据中以16进制来表示，20根地址线达到1M寻址能力需要使用5位十六进制数表示，而8086CPU每次最多只能传递4位十六进制数，所以其在内部使用两个十六位的地址来合成二十位地址)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>所谓的段地址中的“段”并不意味着内存被划分为了一个个的段&lt;strong>内存并没有分段&lt;/strong>，只是因为CPU的寻址方式才有了段地址这个概念，仔细想一想偏移地址最大为FFFFH，这意味着一个段可能最大也就64kb，那我想要访问其他地址怎么办？这个时候就只能改动段地址(想象一根线，你可以在其上选两个点，除了最后一小段第一个点随便选，第二个点只能在第一个点的某一范围内选)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>任意时刻CS,IP指向的内容都当做指令执行，既CP:IP总是指向即将被CPU执行的指令，执行之后IP会自动增加(当然也可以改动CS:IP的指向，想想函数之间的跳转)&lt;code>mov 指令不能够设置CS:IP的值，jmp可以&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>8086CPU不支持将数据直接送入段寄存器的操作，例如&lt;code>mov ds,1000H mov cs,00FFH是非法的&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>8086CPU的入栈和出栈都是以字为单位进行的(既2byte 16位二进制 因为它是16位CPU？32位的CPU就是以4byte位单位，既4byte位一个字？)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>POP和PUSH指令用于出栈和入栈,涉及寄存器SS:SP，&lt;strong>任意时刻SS:SP 始终指向栈顶元素&lt;/strong>执行PUSH或POP和SP会自动增减&lt;strong>入栈时，栈顶从高地址向低地址方向增长&lt;/strong>,8086CPU不会检查栈顶是否超界，需要我们自己控制&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在8086CPU中只有bx,si,di和bp可以用在&amp;quot;[]&amp;ldquo;中用来进行内存单元的寻址&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在没有寄存器名存在的情况下，用操作符 X ptr指明内存单元的长度(X可以为byte或word) &lt;code>mov word ptr [bx],2 或inc byte ptr [bx]&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;blockquote>
+&lt;p>一般来说，我们可以用[bx + idata + si]的方式来访问结构体中的数据。用bx定位整个结构体，用idata定位结构体中的某一个数据项，用si定位数组项中的每个元素。为此，汇编语言提供了更为贴切的书写方式，如&lt;code>[bx].idata [bx].idata[si]&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>在“[]”中bx,si,di和bp可以单独出现，或只能以4种组合出现&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mov ax,[bx]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[si]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[di]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[bp]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mov ax,[bx + si]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[bx + di]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[bp + si]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[bp + di]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mov ax,[bx + si + idata]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[bx + di + idata]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[bp + si + idata]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mox ax,[bp + di + idata]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>下面的指令是错误的&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mov ax,[bx+bp]
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mov ax,[si+di]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>只要在[&amp;hellip;]中使用寄存器bp，而指令中没有显性的给出段地址，段地址就默认在ss中&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>寄存器&lt;/th>
+&lt;th>作用&lt;/th>
+&lt;th>是否可分为两个八位&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>AX&lt;/td>
+&lt;td>通用寄存器&lt;/td>
+&lt;td>是 AH AL&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>BX&lt;/td>
+&lt;td>通用寄存器&lt;/td>
+&lt;td>是 BH BL&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>CX&lt;/td>
+&lt;td>通用寄存器&lt;/td>
+&lt;td>是 CH CL&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DX&lt;/td>
+&lt;td>通用寄存器&lt;/td>
+&lt;td>是 DH DL&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>CS&lt;/td>
+&lt;td>代码段寄存器&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>IP&lt;/td>
+&lt;td>指令指针寄存器&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DS&lt;/td>
+&lt;td>数据段寄存器&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>SS&lt;/td>
+&lt;td>栈段寄存器&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>SP&lt;/td>
+&lt;td>栈顶指针&lt;/td>
+&lt;td>任意时刻SS:SP始终指向栈顶&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>SI&lt;/td>
+&lt;td>与BX功能相近&lt;/td>
+&lt;td>不能分为两个八位寄存器&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>DI&lt;/td>
+&lt;td>与BX功能相近&lt;/td>
+&lt;td>不能分为两个八位寄存器&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>BP&lt;/td>
+&lt;td>用在[&amp;hellip;]寻址中?&lt;/td>
+&lt;td>&lt;strong>只要在[&amp;hellip;]中使用寄存器bp，而指令中没有显性的给出段地址，段地址就默认在ss中&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>PSW&lt;/td>
+&lt;td>(flag寄存器)&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="汇编指令汇总">汇编指令汇总
+&lt;/h1>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>汇编指令&lt;/th>
+&lt;th>控制CPU完成的操作&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>mov ax,18&lt;/td>
+&lt;td>将18送入寄存器AX&lt;/td>
+&lt;td>AX=18&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>add ax,[0]&lt;/td>
+&lt;td>将AX中的数值加DS:0地址处的值结果存入AX&lt;/td>
+&lt;td>AX=AX+[ds*16+0]&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>sub ax,bx&lt;/td>
+&lt;td>将AX中的数据减去BX中的数据后结果存入AX&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>mul reg/内存单元&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>乘法指令&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>div reg/内存单元&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>除法指令&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>push ax&lt;/td>
+&lt;td>将AX的值入栈&lt;/td>
+&lt;td>(1)SP=SP-2 (2)[SS*16+SP]=AX&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>pop ax&lt;/td>
+&lt;td>将栈顶数据送入AX&lt;/td>
+&lt;td>(1)AX=[SS*16+SP] (2)SP=SP+2&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>inc bx&lt;/td>
+&lt;td>BX中的内容加1&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>dec bx&lt;/td>
+&lt;td>BX中的内容减1&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>shl 操作数,移动位数&lt;/td>
+&lt;td>逻辑左移指令&lt;/td>
+&lt;td>将移出的一位写入cf低位补0,如果移动位数大于1则必须将移动位数放入al&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>shr 操作数,移动位数&lt;/td>
+&lt;td>逻辑右移指令&lt;/td>
+&lt;td>将移出的一位写入cf低位补0,如果移动位数大于1则必须将移动位数放入al&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>and ax,bx&lt;/td>
+&lt;td>按位与运算，将结果存入ax&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>or ax,bx&lt;/td>
+&lt;td>按位或运算，将结果存入ax&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>offset 标号&lt;/td>
+&lt;td>由编译器处理功能是取得标号的偏移地址&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>seg 标号&lt;/td>
+&lt;td>由编译器处理功能是取得标号的段地址&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>adc 操作对象1,操作对象2&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>操作对象1=操作对象1+操作对象2+CF&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>sbb 操作对象1,操作对象2&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>操作对象1=操作对象1-操作对象2-CF&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>cmp 操作对象1,操作对象2&lt;/td>
+&lt;td>相当于减法指令但不保存结果但会对标志寄存器产生影响&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>cld&lt;/td>
+&lt;td>将标志寄存器df位置0&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>std&lt;/td>
+&lt;td>将标志寄存器df位置1&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>cli&lt;/td>
+&lt;td>将标志寄存器if位置0&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>sti&lt;/td>
+&lt;td>将标志寄存器if位置1&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>pushf&lt;/td>
+&lt;td>将标志寄存器压栈&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>popf&lt;/td>
+&lt;td>将栈中数据送入标志寄存器&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>loop 标号&lt;/td>
+&lt;td>循环&lt;/td>
+&lt;td>(1)CX=CX-1 (2)若CX不为零则转至标号处，否则向下执行&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jmp 段地址:偏移地&lt;/td>
+&lt;td>同时修改CS:IP&lt;/td>
+&lt;td>无条件转移指令(&lt;strong>只能在debug中使用,不能在源程序中使用&lt;/strong>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jmp 某一合法寄存器&lt;/td>
+&lt;td>仅修改IP&lt;/td>
+&lt;td>无条件转移指令,转移目的地址在寄存器中&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jmp short 标号&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>段内短转移8位位移，仅修改IP，依据位移进行转移&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jmp near ptr 标号&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>段内近转移16位位移，仅修改IP，依据位移进行转移&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jmp far ptr 标号&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>段间转移，同时修改CS和IP,转移目的地址在指令中&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jmp word ptr 内存单元地址&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>段内转移，仅修改IP,转移目的地址在内存中&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jmp dword ptr 内存单元地址&lt;/td>
+&lt;td>CS=(内存单元地址+2) IP=内存单元地址&lt;/td>
+&lt;td>段间转移，同时修改CS和IP,转移目的地址在内存中&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jcxz 标号&lt;/td>
+&lt;td>用法:IP=IP+8位位移&lt;/td>
+&lt;td>有条件转移指令,所有的有条件转移指令都是短转移,如果CX=0,转移到标号处执行&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ret&lt;/td>
+&lt;td>修改IP内容,实现近转移&lt;/td>
+&lt;td>(1)IP=SS*16+SP (2)SP=SP+2&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>retf&lt;/td>
+&lt;td>修改CS和IP内容,实现远转移&lt;/td>
+&lt;td>(1)IP=SS*16+SP (2)SP=SP+2 (3)CS=SS*16+SP (4)SP=SP+2&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>iret&lt;/td>
+&lt;td>通常和硬件自动完成的中断过程配合使用&lt;/td>
+&lt;td>(1)pop IP (2)pop CS (3)popf&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>call 标号/16位reg&lt;/td>
+&lt;td>将当前IP或CS和IP压入栈并转移(call不能实现短转移)&lt;/td>
+&lt;td>(1)SP=SP-2 SS*16+SP=IP (2)IP=IP+16位位移/reg&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>call far ptr 标号&lt;/td>
+&lt;td>实现段间转移&lt;/td>
+&lt;td>(2)SP=SP-2 SS&lt;em>16+SP=CS SP=SP-2 SS&lt;/em>16+SP=IP (2)设置CS 设置IP&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>call word ptr 内存单元地址&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>push IP jmp word ptr 内存单元地址&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>call dword ptr 内存单元地址&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>push CS push IP jmp dword ptr 内存单元地址&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>(loop以及loop之后的的指令都是转移指令)&lt;/p>
+&lt;h2 id="补充">补充
+&lt;/h2>&lt;h3 id="div">div：
+&lt;/h3>&lt;p>(1)除数有8位或16位，在一个寄存器或内存单元中
+(2)被除数:默认放在ax中(除数位8位，被除数为16位)或放在AX和DX中(除数位16位，被除数为32位，DX存高16位AX存低16位)
+(3)如果除数为8位，AL存商AH存余数；如果除数为16位，AX存商DX存余数。&lt;/p>
+&lt;h3 id="mul">mul：
+&lt;/h3>&lt;p>(1)两个数要么都是8位要么都是16位
+(2)如果是8/16位，一个默认放在AL/AX中，另一个默认放在8位/16位reg或内存单元字节中
+(3)如果为8位，结果默认放在AX,如果是16位DX默认放高位AX默认放低位。&lt;/p>
+&lt;h3 id="flag寄存器">flag寄存器
+&lt;/h3>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>15&lt;/th>
+&lt;th>14&lt;/th>
+&lt;th>13&lt;/th>
+&lt;th>12&lt;/th>
+&lt;th>11&lt;/th>
+&lt;th>10&lt;/th>
+&lt;th>9&lt;/th>
+&lt;th>8&lt;/th>
+&lt;th>7&lt;/th>
+&lt;th>6&lt;/th>
+&lt;th>5&lt;/th>
+&lt;th>4&lt;/th>
+&lt;th>3&lt;/th>
+&lt;th>2&lt;/th>
+&lt;th>1&lt;/th>
+&lt;th>0&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>OF&lt;/td>
+&lt;td>DF&lt;/td>
+&lt;td>IF&lt;/td>
+&lt;td>TF&lt;/td>
+&lt;td>SF&lt;/td>
+&lt;td>ZF&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>AF&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>PF&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>CF&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>溢出标志位&lt;/td>
+&lt;td>方向标志位&lt;/td>
+&lt;td>可屏蔽中断标志&lt;/td>
+&lt;td>TF&lt;/td>
+&lt;td>符号标志位&lt;/td>
+&lt;td>0标志位&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>AF&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>奇偶标志位PF&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>进位标志位&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>记录相关命令执行后结果是否溢出,如果溢出OF=1否则为0&lt;/td>
+&lt;td>控制每次操作后si,di的增减，如果df=0每次操作后si、di递增否则递减&lt;/td>
+&lt;td>IF&lt;/td>
+&lt;td>TF&lt;/td>
+&lt;td>记录相关命令执行后结果是否为负,如果为负SF=1否则为0&lt;/td>
+&lt;td>记录相关命令执行后结果是否为0,如结果为0，那么ZF=1否则ZF=0&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>AF&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>记录相关命令执行后结果所有bit为中1的个数是否为偶数,如果为偶数PF=1否则为0&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>记录运算结果向更高位的进位值或向更高位的借位值&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="检测比较结果的条件转移指令">检测比较结果的条件转移指令
+&lt;/h3>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>指令&lt;/th>
+&lt;th>含义&lt;/th>
+&lt;th>检测的相关标志位&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>je&lt;/td>
+&lt;td>等于则转移&lt;/td>
+&lt;td>zf=1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jne&lt;/td>
+&lt;td>不等于则 转移&lt;/td>
+&lt;td>zf=0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jb&lt;/td>
+&lt;td>低于则转移&lt;/td>
+&lt;td>cf=1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jnb&lt;/td>
+&lt;td>不低于则转移&lt;/td>
+&lt;td>cf=0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ja&lt;/td>
+&lt;td>高于则转移&lt;/td>
+&lt;td>cf=0且zf=0&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>jna&lt;/td>
+&lt;td>不高于则转移&lt;/td>
+&lt;td>cf=1或zf=1&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;em>助记:j-&amp;gt;jump,e-&amp;gt;equal,n-&amp;gt;not,b-&amp;gt;below,a-&amp;gt;above&lt;/em>&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="汇编程序的编写">汇编程序的编写
+&lt;/h1>&lt;p>源程序-&amp;gt;编译-&amp;gt;连接-&amp;gt;执行&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>汇编语言中包含两种指令，一种是汇编指令，一种是伪指令，汇编指令最终是要被CPU执行的，为伪指令由编译器来执行&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>汇编源程序中，数据不能以字母开头&lt;/strong>，所以要在前面加0。如A000h应该写为0A000h。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在汇编源程序中，如果希望在&amp;rdquo;[]&amp;ldquo;中直接给出内存单元的偏移地址，则需要在&amp;rdquo;[]&amp;ldquo;前面显式的给出段地址所在的段寄存器。如 mov ax,ds:[0] (在汇编语言中称之为段前缀)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>db:定义一个字节 dw:定义一个字 dd:定义两个字 dup:用来进行数据重复&lt;code>db 3 dup(0)&lt;/code>定义了3个字节，他们的值都是0，相当于&lt;code>db 0,0,0&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>S:nop&lt;/code> 中nop代表no operation,空操作占用一个机器周期&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-asm" data-lang="asm">&lt;span class="line">&lt;span class="cl">&lt;span class="nf">assume&lt;/span> &lt;span class="no">cs&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="no">codeseg&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">codeseg&lt;/span> &lt;span class="no">segment&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># 2*(123+456)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">mov&lt;/span> &lt;span class="no">ax&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">0123&lt;/span>&lt;span class="no">H&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">mov&lt;/span> &lt;span class="no">bx&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">0456&lt;/span>&lt;span class="no">H&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">add&lt;/span> &lt;span class="no">ax&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="no">bx&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">add&lt;/span> &lt;span class="no">ax&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="no">ax&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">mov&lt;/span> &lt;span class="no">ax&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="no">c00H&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">int&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="no">H&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">codeseg&lt;/span> &lt;span class="no">ends&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">;假设b是一个标号
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">b: db 10 dup(0)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mov ax,b
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mov b:[2],ax
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">;在指令中使用标号,它相当于一个地址同时还指定了长度
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>##伪指令&lt;/p>
+&lt;p>(1) XXX segment
+:
+:
+XXX ends&lt;/p>
+&lt;blockquote>
+&lt;p>segment和ends是成对使用的伪指令，这是在写可被编译器编译的汇编程序时必须用到的一对伪指令。segment和ends的功能是定义一个段，segment说明一个段的开始，ends说明一个段的结束。一个段必须有名称标记，使用格式为：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">段名 segment
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> :
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">段名 ends
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/blockquote>
+&lt;p>利用此方法将代码段、数据段、栈段分隔开
+(2) end&lt;/p>
+&lt;blockquote>
+&lt;p>end是一个汇编程序结束的标记，编译器在编译汇编程序的过程中，如果碰到了伪指令end，就结束对源程序的编译。(如果源程序有多个代码段，在end后面加上标号，以指定程序入口)&lt;/p>
+&lt;/blockquote>
+&lt;p>(3) assume&lt;/p>
+&lt;blockquote>
+&lt;p>这条伪指令的含义为“假设”。它假设某一段寄存器和程序中的某一个用segment&amp;hellip;ends 定义的段相关联&lt;/p>
+&lt;/blockquote>
+&lt;p>(4) 标号&lt;/p>
+&lt;blockquote>
+&lt;p>汇编源程序中，除了汇编指令和伪指令外，还有一些标号，比如“codeseg”。一个标号指代了一个地址。比如codeseg在segment前面，作为一个段的名称，这个段的名称最终将被编译、连接程序处理为一个段的段地址&lt;/p>
+&lt;/blockquote>
+&lt;p>(5) 程序返回&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mov ax,4c00H
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">int 21H
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h1 id="端口">端口
+&lt;/h1>&lt;ul>
+&lt;li>端口地址范围0~65535(oxffff)&lt;/li>
+&lt;li>端口只能用in和out来从端口读取数据和往端口写入数据&lt;/li>
+&lt;li>在in和out指令中，只能用ax或al来存放从端口中读入的数据或要发送到端口的数据&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>对0~255以内的端口进行读写时:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">in al,20h ;从20h端口读一个字节
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">out 20h,al ;往20端口写入一个字节
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>对256~65535的端口进行读写时,端口号放在dx中&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">mov dx,3f8h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">in al,dx ;从3f8h端口读一个字节
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">out dx,al ;向3f8h端口写一个字节
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/blockquote></description></item></channel></rss>

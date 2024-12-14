@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cmake on Nu11able</title><link>https://nu11able.github.io/tags/cmake/</link><description>Recent content in Cmake on Nu11able</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 03 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://nu11able.github.io/tags/cmake/index.xml" rel="self" type="application/rss+xml"/><item><title>cmake使用记录</title><link>https://nu11able.github.io/p/cmake%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/</link><pubDate>Thu, 03 Mar 2022 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/cmake%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/</guid><description>&lt;h1 id="cmake使用记录">cmake使用记录
+&lt;/h1>&lt;h2 id="cmake使用模板">cmake使用模板
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cmake" data-lang="cmake">&lt;span class="line">&lt;span class="cl">&lt;span class="c">#CMake的最低版本要求
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">cmake_minimum_required&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">VERSION&lt;/span> &lt;span class="s">3.0&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#项目名称
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">project&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">tingx&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#设置版本是 Debug 还是 Release
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">CMAKE_BUILD_TYPE&lt;/span> &lt;span class="s2">&amp;#34;Debug&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">GLOB_RECURSE&lt;/span> &lt;span class="s">SRC_FILES&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src/**.cc&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src/**.hpp&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src/**.h&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c"># 移除某些文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">GLOB_RECURSE&lt;/span> &lt;span class="s">MAINS&lt;/span> &lt;span class="s">src/*main.cc&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">list&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REMOVE_ITEM&lt;/span> &lt;span class="s">LIBRARY&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">MAINS&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c"># msvc 按文件夹分组
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">macro&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">source_group_by_dir&lt;/span> &lt;span class="s">source_files&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">MSVC&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_cur_dir&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">CMAKE_CURRENT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">foreach&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_file&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">${source_files&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REGEX&lt;/span> &lt;span class="s">REPLACE&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_cur_dir&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/\(.*\&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="err">\\1&lt;/span> &lt;span class="err">sgbd_fpath&lt;/span> &lt;span class="err">${sgbd_file})
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REGEX&lt;/span> &lt;span class="s">REPLACE&lt;/span> &lt;span class="s2">&amp;#34;\(.*\)/.*&amp;#34;&lt;/span> &lt;span class="s">\\1&lt;/span> &lt;span class="s">sgbd_group_name&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_fpath&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">COMPARE&lt;/span> &lt;span class="s">EQUAL&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_fpath&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_group_name&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="s">sgbd_nogroup&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">REPLACE&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;\\&amp;#34;&lt;/span> &lt;span class="s">sgbd_group_name&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_group_name&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_nogroup&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_group_name&lt;/span> &lt;span class="s2">&amp;#34;\\&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">endif&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_nogroup&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">source_group&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_group_name&lt;/span>&lt;span class="o">}&lt;/span> &lt;span class="s">FILES&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">sgbd_file&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">endforeach&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">sgbd_file&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="nb">endif&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">MSVC&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">endmacro&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">source_group_by_dir&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#设置包含目录
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">include_directories&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/src&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#设置输出目录
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">EXECUTABLE_OUTPUT_PATH&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/build&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#添加编译参数,比如add_definitions(-DDEBUG)将在gcc命令行添加DEBUG宏定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">add_definitions&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">-g&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="c">#添加可执行文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="nb">add_executable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">tingx&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">SRC_FILES&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="nb">add_executable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">client&lt;/span> &lt;span class="o">${&lt;/span>&lt;span class="nv">PROJECT_SOURCE_DIR&lt;/span>&lt;span class="o">}&lt;/span>&lt;span class="s">/test/client.cc&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="cmake预定义变量">cmake预定义变量
+&lt;/h2>&lt;p>&lt;code>以下假设项目文件夹路径为/home/name/project&lt;/code>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>变量&lt;/th>
+&lt;th>值&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>PROJECT_SOURCE_DIR&lt;/td>
+&lt;td>/home/name/project&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="问题汇总">问题汇总
+&lt;/h2>&lt;h3 id="cmakevscode配置后源代码中显示头文件找不到">cmake+vscode配置后源代码中显示头文件找不到
+&lt;/h3>&lt;p>在项目文件夹下.vscode中settings.json中添加行&amp;quot;C_Cpp.default.configurationProvider&amp;quot;: &amp;ldquo;vector-of-bool.cmake-tools&amp;rdquo;&lt;/p></description></item></channel></rss>

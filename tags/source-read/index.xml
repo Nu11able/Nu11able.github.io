@@ -1,0 +1,1118 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Source Read on Nu11able</title><link>https://nu11able.github.io/tags/source-read/</link><description>Recent content in Source Read on Nu11able</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 06 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://nu11able.github.io/tags/source-read/index.xml" rel="self" type="application/rss+xml"/><item><title>msft_proxy 源码解析</title><link>https://nu11able.github.io/p/msft_proxy-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</link><pubDate>Wed, 06 Nov 2024 00:00:00 +0000</pubDate><guid>https://nu11able.github.io/p/msft_proxy-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</guid><description>&lt;h1 id="proxyhttpsgithubcommicrosoftproxy">&lt;a class="link" href="https://github.com/microsoft/proxy" target="_blank" rel="noopener"
+>proxy&lt;/a>
+&lt;/h1>&lt;p>看一下官方例子&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">PRO_DEF_MEM_DISPATCH&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">at&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Dictionary&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">pro&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">facade_builder&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">::&lt;/span>&lt;span class="n">add_convention&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">::&lt;/span>&lt;span class="n">build&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// This is a function, rather than a function template
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="nf">PrintDictionary&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pro&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Dictionary&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">dictionary&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">dictionary&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">container1&lt;/span>&lt;span class="p">{{&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;hello&amp;#34;&lt;/span>&lt;span class="p">}};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">auto&lt;/span> &lt;span class="n">container2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">make_shared&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">container2&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;hello&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">container2&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;world&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PrintDictionary&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">container1&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// Prints: &amp;#34;hello&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">PrintDictionary&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">container2&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// Prints: &amp;#34;world&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>首先提出几个问题，而后文章将围绕解答这几个问题展开&lt;/p>
+&lt;ul>
+&lt;li>最终这个&lt;code>Dictionary&lt;/code>在继承了这么一大串之后&lt;code>build&lt;/code>得到的类型是什么样的？&lt;/li>
+&lt;li>&lt;code>container1&lt;/code>和&lt;code>container2&lt;/code>在传递给&lt;code>PrintDictionary&lt;/code>的时候是如何转换为&lt;code>pro::proxy&amp;lt;Dictionary&amp;gt;&lt;/code>类型的？&lt;/li>
+&lt;li>&lt;code>pro::proxy&amp;lt;Dictionary&amp;gt;&lt;/code>是如何访问原始类型的at函数的&lt;/li>
+&lt;/ul>
+&lt;h2 id="pro_def_mem_dispatchmemat-at展开">PRO_DEF_MEM_DISPATCH(MemAt, at)展开
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">MemAt&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">__T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">__Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">decltype&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">auto&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">operator&lt;/span>&lt;span class="p">()(&lt;/span>&lt;span class="n">__T&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">__self&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__Args&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="n">__args&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">noexcept&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">noexcept&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__self&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__args&lt;/span>&lt;span class="p">)...)))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">requires&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__self&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__args&lt;/span>&lt;span class="p">)...);&lt;/span> &lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__self&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__args&lt;/span>&lt;span class="p">)...);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">__Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">__declspec&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">empty_bases&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">accessor&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">accessor&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">delete&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">__Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">...(&lt;/span>&lt;span class="n">__Os&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">1u&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_trivial_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__Os&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="p">...))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__Os&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__Os&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">at&lt;/span>&lt;span class="p">...;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">__R&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">__Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">__R&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__Args&lt;/span>&lt;span class="p">...)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__R&lt;/span> &lt;span class="nf">at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__Args&lt;/span>&lt;span class="p">...&lt;/span> &lt;span class="n">__args&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="o">::&lt;/span>&lt;span class="n">pro&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">proxy_invoke&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">pro&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">access_proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="o">::&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">__Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">__args&lt;/span>&lt;span class="p">)...);&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>展开后看到定义了一个MemAt结构体，是一个functor，里面有一堆特化的accessor模板，每个accessor里有一个宏参数传递进来的at函数，
+而后又根据&lt;code>__R(__Args...)&lt;/code>的类型定义了不同的accessor模板，看到这盲猜&lt;code>__R(__Args...)&lt;/code>和&lt;code>add_convention&amp;lt;MemAt, std::string(int)&amp;gt;&lt;/code>中的&lt;code>std::string(int)&lt;/code>有点关系，
+至于类型&lt;code>__F&lt;/code>和&lt;code>__C&lt;/code>是啥暂时不知道&lt;/p>
+&lt;h2 id="接下来逐步展开-dictionary">接下来逐步展开 Dictionary
+&lt;/h2>&lt;h3 id="facade_builder">facade_builder
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">Cs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">Rs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">proxiable_ptr_constraints&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="nc">basic_facade_builder&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">...(&lt;/span>&lt;span class="n">Os&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0u&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">overload_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Os&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">applicable&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="p">...))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">add_indirect_convention&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">basic_facade_builder&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">add_conv_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Cs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Os&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Rs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">sizeof&lt;/span>&lt;span class="p">...(&lt;/span>&lt;span class="n">Os&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0u&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">(&lt;/span>&lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">overload_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Os&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">applicable&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="p">...))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">add_convention&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">add_indirect_convention&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Os&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">build&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">facade_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Rs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">normalize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">facade_builder&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">basic_facade_builder&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">proxiable_ptr_constraints&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_align&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">copyability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">relocatability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">destructibility&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ---------------------------------- 不算华丽的分割线 ----------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 下面依次展开Dictionary的模版实例
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="nc">Dictionary&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">pro&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">facade_builder&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">::&lt;/span>&lt;span class="n">add_convention&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">::&lt;/span>&lt;span class="n">build&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Cs: std::tuple&amp;lt;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Rs: std::tuple&amp;lt;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// C: ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="nc">Dictionary&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">basic_facade_builder&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">proxiable_ptr_constraints&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_align&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">copyability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">relocatability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">destructibility&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">::&lt;/span>&lt;span class="n">add_indirect_convention&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="c1">// D: MemAt Os: std::string(int)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">::&lt;/span>&lt;span class="n">build&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Dictionary&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="n">basic_facade_builder&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">add_conv_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">proxiable_ptr_constraints&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_align&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">copyability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">relocatability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">destructibility&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">::&lt;/span>&lt;span class="n">build&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>展开到这里还是一脸懵逼，下面展开说说&lt;code>conv_impl&lt;/code>和&lt;code>add_conv_t&lt;/code>&lt;/p>
+&lt;h4 id="conv_impl">conv_impl
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">bool&lt;/span> &lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">conv_impl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="k">constexpr&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="n">is_direct&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">dispatch_type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">D&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">overload_types&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Os&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">accessor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">D&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Os&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 这时候就可以知道 dispatch_type=MemAt, overload_types=std::tuple&amp;lt;std::string(int)&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">回到最初MemAt定义的accessor模板
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> template &amp;lt;class __F, class __C, class __R, class... __Args&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> struct accessor&amp;lt;__F, __C, __R(__Args...)&amp;gt; {...}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>&lt;code>__C&lt;/code> = &lt;code>conv_impl&amp;lt;false, MemAt, std::string(int)&amp;gt;&lt;/code>&lt;/li>
+&lt;li>&lt;code>__R(__Args...)&lt;/code> = &lt;code>std::string(int)&lt;/code>&lt;/li>
+&lt;li>&lt;code>__F&lt;/code> = ? 暂时还不知道&lt;/li>
+&lt;/ul>
+&lt;h4 id="add_conv_t">add_conv_t
+&lt;/h4>&lt;p>在展开之前需要先分别对这几个过一遍&lt;/p>
+&lt;ul>
+&lt;li>recursive_reduction&lt;/li>
+&lt;li>add_tuple_reduction&lt;/li>
+&lt;li>instantiated_t
+完事后将学会&lt;/li>
+&lt;li>如何合并tuple类型并保持类型不重复&lt;/li>
+&lt;/ul>
+&lt;p>首先看一下定义&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">, &lt;/span>&lt;span class="nc">class&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">R&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Is&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">recursive_reduction&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">O&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">, &lt;/span>&lt;span class="nc">class&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">R&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Is&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">recursive_reduction_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">recursive_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">R&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Is&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">, &lt;/span>&lt;span class="nc">class&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">R&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Is&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">recursive_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">R&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Is&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">recursive_reduction_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">R&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">R&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Is&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 乍一看一脸懵逼，再仔细一看更懵逼了
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">尝试一下如果有一个类型recursive_reduction_t&amp;lt;A, B, C, D, E&amp;gt;展开
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">recursive_reduction&amp;lt;A,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> A&amp;lt;B, C&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> D,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> E&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">recursive_reduction&amp;lt;A,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> A&amp;lt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> A&amp;lt;B, C&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> D&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> E&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">recursive_reduction&amp;lt;A,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> A&amp;lt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> A&amp;lt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> A&amp;lt;B, C&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> D&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> E&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> &amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">emm... 不知道干啥的，继续往下看吧...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ---------------------------------- 分割线 ----------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">add_tuple_reduction&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">O&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Os&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_same_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="p">...)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">add_tuple_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Os&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Os&lt;/span>&lt;span class="p">...,&lt;/span> &lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 如果类型I不存在std::tuple&amp;lt;Os...&amp;gt;中那么将类型I添加到tuple中,最终得到一个新的类型std::tuple&amp;lt;Os..., I&amp;gt;，否则保持std::tuple&amp;lt;Os...&amp;gt;不变
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 保证tuple中的类型没有重复的
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ---------------------------------- 分割线 ----------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">TL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">Is&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">instantiated_traits&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">TL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">size_t&lt;/span>&lt;span class="p">...&lt;/span> &lt;span class="n">Is&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">instantiated_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">TL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">index_sequence&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Is&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Args&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Args&lt;/span>&lt;span class="p">...,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple_element_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Is&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">TL&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">TL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">instantiated_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">instantiated_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">TL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">make_index_sequence&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple_size_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">TL&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Args&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 要求TL是一个tuple，尝试展开instantiated_t&amp;lt;A, tuple&amp;lt;B, C, D&amp;gt;, E, F, G&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 得到类型 A&amp;lt;E, F, G, B, C, D&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 这玩意有啥用呢？不知道...反正先过一边再说
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>到这里不出意外应该还是一脸懵逼的，上面一堆玩意儿干啥用的&amp;hellip;我知道你很急但是你先别急，下面感觉慢慢来了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">U&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">add_tuple_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">add_tuple_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">U&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 将U添加进tuple类型T中,前提是tuple T中不存在类型U
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Is&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">merge_tuple_impl_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">recursive_reduction_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_tuple_t&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Is&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 尝试展开merge_tuple_impl_t&amp;lt;tuple&amp;lt;int&amp;gt;, float, string, int, string&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">recursive_reduction&amp;lt;add_tuple_t, tuple&amp;lt;int&amp;gt;, float, string, int, string&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">recursive_reduction&amp;lt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> add_tuple_t,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> add_tuple_t&amp;lt;tuple&amp;lt;int&amp;gt;, float&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> string, int, string&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">recursive_reduction&amp;lt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> add_tuple_t,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> add_tuple_t&amp;lt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> add_tuple_t&amp;lt;tuple&amp;lt;int&amp;gt;, float&amp;gt;,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> string
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> &amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> int, string&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">也就是说递归的将类型float, string, int, string用add_tuple_t添加到tuple&amp;lt;int&amp;gt;中,最终得到tuple&amp;lt;int, float, string&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">所以recursive_reduction&amp;lt;R, O, Is...&amp;gt;相当于是用R将每个Is...一个一个的添加到O里面去
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">兄弟萌感觉来了┗|｀O′|┛ 嗷~~
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">U&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">merge_tuple_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">instantiated_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">merge_tuple_impl_t&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">U&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">上面已经知道merge_tuple_impl_t的作用，这里又包了一层instantiated_t是干啥的呢, 假设U=tuple&amp;lt;int, string&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">展开instantiated_t&amp;lt;merge_tuple_impl_t, tuple&amp;lt;int, string&amp;gt;, T&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">得到merge_tuple_impl_t&amp;lt;T, int, string&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">从上面的定义又知道T也得是一个tuple，所以merge_tuple_t相当于将两个tuple T U合并为一个tuple并且保持类型没有重复
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">我的天呐щ(ʘ╻ʘ)щ
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>换个简单点例子感受一下&lt;code>instantiated_t&lt;/code>是一个什么样的角色&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">operation&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">op&lt;/span>&lt;span class="p">)(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">op&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">sub&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">operation&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">add&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">operation&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">sub&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>instantiated_t相当于operation，只不过operation是对值进行计算而instantiated_t是对类型进行计算，这个区别刚好也是普通编程和模板元编程的区别(不太确定这么区分有没有问题,大佬们轻点喷)。
+OK，再来总结一遍&lt;/p>
+&lt;ul>
+&lt;li>recursive_reduction&amp;lt;R, O, Is&amp;hellip;&amp;gt;相当于是用R将每个Is&amp;hellip;一个一个的添加到O里面去&lt;/li>
+&lt;li>instantiated_t&amp;lt;T, TL, Args&amp;hellip;&amp;gt; TL是一个tuple，将TL每个类型展开组合成新的类型 T&amp;lt;Args&amp;hellip;, TL&amp;hellip;&amp;gt;&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">bool&lt;/span> &lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">D&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">merge_conv_traits&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Os&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Os&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">C0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">merge_conv_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">instantiated_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">merge_conv_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">C0&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_direct&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">C0&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">dispatch_type&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">type&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">merge_tuple_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">C0&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">overload_types&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">C1&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">overload_types&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* merge_tuple_t得到一个tuple，里面是去重后的函数类型
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> 也就是说merge_conv_t将两个conv_impl类型C1的overload_types合并到C0的overload_types中
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 基础模板定义
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">Cs0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">add_conv_reduction&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 第二个tuple模板参数不是空的，则递归的将其添加到第一个tuple中
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Cs0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Cs2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs0&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">C1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Cs2&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs0&lt;/span>&lt;span class="p">...,&lt;/span> &lt;span class="n">C1&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs2&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">为什么不直接这样呢一步到位而是一个个添加？
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">template &amp;lt;class... Cs0, class C1, class... Cs2, class C&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">struct add_conv_reduction&amp;lt;std::tuple&amp;lt;Cs0...&amp;gt;, std::tuple&amp;lt;C1, Cs2...&amp;gt;, C&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> : add_conv_reduction&amp;lt;std::tuple&amp;lt;Cs0..., C1, Cs2...&amp;gt;, std::tuple&amp;lt;&amp;gt;, C&amp;gt; {};
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 如果C与C1的is_direct和dispatch_type相等，则合并它们两个，这里也就可以回答上面的问题了，
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">因为需要对各个conv_impl进行合并*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Cs0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Cs2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_direct&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">C1&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_direct&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_same_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">typename&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">dispatch_type&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">C1&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">dispatch_type&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs0&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">C1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Cs2&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs0&lt;/span>&lt;span class="p">...,&lt;/span> &lt;span class="n">merge_conv_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">C1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Cs2&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Cs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs&lt;/span>&lt;span class="p">...,&lt;/span> &lt;span class="n">merge_conv_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_direct&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">dispatch_type&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 最终add_conv_reduction得到的是一个tuple，里面的类型是按照is_direct和dispatch_type进行合并后的conv_impl
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">Cs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">add_conv_t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Cs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>下面直接带入最开始的模板参数&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">add_conv_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// Cs = void
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span> &lt;span class="c1">// C
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">merge_conv_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nl">C&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// C0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="c1">// C1
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">add_conv_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">instantiated_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">merge_conv_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nl">C&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//最终得到
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// emm...绕了一大圈又回来了... 有一种脱裤子放屁的感觉
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>下面我们终于可以得到Dictionary的定义了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">Cs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">Rs&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">proxiable_ptr_constraints&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">facade_impl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">convention_types&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Cs&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">reflection_types&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Rs&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="k">constexpr&lt;/span> &lt;span class="n">proxiable_ptr_constraints&lt;/span> &lt;span class="n">constraints&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Dictionary&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="n">facade_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">normalize&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">proxiable_ptr_constraints&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_align&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">copyability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">relocatability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">destructibility&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">invalid_cl&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Dictionary&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="n">facade_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">tuple&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">proxiable_ptr_constraints&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">max_align&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">copyability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">constraint_level&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">none&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">relocatability&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">constraint_level&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">nothrow&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">.&lt;/span>&lt;span class="n">destructibility&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">constraint_level&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">nothrow&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 也就是说facade_impl中
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">convention_types = std::tuple&amp;lt;details::conv_impl&amp;lt;false, MemAt, std::string(int)&amp;gt;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">reflection_types = std::tuple&amp;lt;&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">constraints = proxiable_ptr_constraints{
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .max_size = sizeof(void *[2]),
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .max_align = sizeof(void *[2]),
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .copyability = constraint_level::none,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .relocatability = constraint_level::nothrow,
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> .destructibility = constraint_level::nothrow}
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="接下来看看类型proproxydictionary">接下来看看类型pro::proxy&amp;lt;Dictionary&amp;gt;
+&lt;/h2>&lt;ul>
+&lt;li>pro::proxy&amp;lt;Dictionary&amp;gt;&lt;/li>
+&lt;li>facade_traits&lt;/li>
+&lt;li>facade_conv_traits_impl&lt;/li>
+&lt;li>composite_accessor&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">proxy&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">facade_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">direct_accessor&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static_assert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">facade&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">friend&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="nc">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">proxy_helper&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">_Traits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">facade_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">proxy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">P&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">noexcept&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_nothrow_constructible_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">decay_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">proxiable&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">decay_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_constructible_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">decay_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">initialize&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">decay_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="k">operator&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">noexcept&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">_Traits&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">has_indirection&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">addressof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ia_&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">P&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">P&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">initialize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Args&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="n">args&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">construct_at&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">reinterpret_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span> &lt;span class="o">*&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ptr_&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">args&lt;/span>&lt;span class="p">)...);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">meta_&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">meta_ptr&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">_Traits&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">meta&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">in_place_type&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">launder&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">reinterpret_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">P&lt;/span> &lt;span class="o">*&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ptr_&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">[[___PRO_NO_UNIQUE_ADDRESS_ATTRIBUTE]]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">typename&lt;/span> &lt;span class="n">_Traits&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">indirect_accessor&lt;/span> &lt;span class="n">ia_&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">meta_ptr&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">_Traits&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">meta&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">meta_&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">alignas&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">constraints&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">max_align&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">byte&lt;/span> &lt;span class="n">ptr_&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">constraints&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">max_size&lt;/span>&lt;span class="p">];&lt;/span> &lt;span class="c1">// 一个P类型的指针
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 当将一个std::map类型的container赋值给proxy&amp;lt;Dictionary&amp;gt;的时候，proxy的内部会保留原始值的指针，
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">当调用-&amp;gt;运算符的时候返回的是facade_traits&amp;lt;Dictionary&amp;gt;::indirect_accessor类型的成员变量ia_*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//下面一步步展开facade_traits&amp;lt;Dictionary&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="nc">facade_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">instantiated_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">facade_conv_traits_impl&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">convention_types&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">instantiated_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">facade_refl_traits_impl&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">reflection_types&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="cm">/*...*/&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">facade_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Dictionary&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">:&lt;/span> &lt;span class="n">facade_conv_traits_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Dictionary&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">facade_refl_traits_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Dictionary&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="cm">/*...*/&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">facade_conv_traits_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Dictionary&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">applicable_traits&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">conv_meta&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">composite_meta&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">conv_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Cs&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">meta&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">indirect_accessor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">composite_accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Dictionary&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">direct_accessor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">composite_accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">true&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Dictionary&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ......
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">As&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">___PRO_ENFORCE_EBO&lt;/span> &lt;span class="nl">composite_accessor_impl&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">As&lt;/span>&lt;span class="p">...&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">friend&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">pro&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// composite_accessor_impl 继承As... 没有多余的操作，那么As...又是一些什么东西呢？
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">TA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">composite_accessor_reduction&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">type_identity&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">O&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{};&lt;/span> &lt;span class="c1">// 有没有感觉和前面的recursive_reduction有点类似
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">TA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">As&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">requires&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">TA&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_trivial_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">TA&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="o">!&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_final_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">TA&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">composite_accessor_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">TA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">composite_accessor_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">As&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">composite_accessor_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">As&lt;/span>&lt;span class="p">...,&lt;/span> &lt;span class="n">TA&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">bool&lt;/span> &lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">composite_accessor_helper&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">requires&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_direct&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">single_accessor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">accessor&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">I&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">reduction_t&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">typename&lt;/span> &lt;span class="n">composite_accessor_reduction&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">single_accessor&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">O&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">I&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* TA = single_accessor
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> composite_accessor_reduction将single_accessor&amp;lt;I&amp;gt;添加到composite_accessor_impl的As模版本参数列表中
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> 推断出composite_accessor_impl是由一系列single_accessor&amp;lt;I&amp;gt;，到这里暂时还不知道I是什么类型
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">bool&lt;/span> &lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Cs&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">composite_accessor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">recursive_reduction_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">composite_accessor_helper&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">IS_DIRECT&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">reduction_t&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">composite_accessor_impl&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Cs&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//带入实参
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="n">composite_accessor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">recursive_reduction_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">composite_accessor_helper&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Dictionary&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">reduction_t&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="c1">// IS_DIRECT=false F=Dictionary
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">composite_accessor_impl&lt;/span>&lt;span class="o">&amp;lt;&amp;gt;&lt;/span> &lt;span class="c1">// O
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">conv_impl&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="nb">false&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">MemAt&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">string&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="c1">// I
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/* 推断出single_accessor&amp;lt;I&amp;gt; =
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> conv_impl&amp;lt;false, MemAt, std::string(int)&amp;gt;::accessor&amp;lt;Dictionary&amp;gt; =
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> MemAt::accessor&amp;lt;Dictionary, conv_impl&amp;lt;false, MemAt, std::string(int)&amp;gt;, std::string(int)&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们终于得到了成员变量ia_的类型_Traits::indirect_accessor = MemAt::accessor&amp;lt;Dictionary, conv_impl&amp;lt;false, MemAt, std::string(int)&amp;gt;, std::string(int)&amp;gt;
+&lt;strong>调用proxy&lt;Dictionary>的at函数相当于调用MemAt的accessor模板中的at函数&lt;/strong>
+现在回到MemAt中的accessor模板,！！只差最后的proxy_invoke和access_proxy我们就通关了！！( •̀ ω •́ )✧
+从名字大概就可以推断出access_proxy获取自身的proxy，拿到自身的proxy后通过ptr_指针调用原始类型的at函数(其实中间还要经过一层MemAt)&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">proxy_helper&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="kr">inline&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="k">auto&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">get_meta&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">noexcept&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">meta_&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="k">operator&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qualifier_type&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="c1">// C=conv_impl&amp;lt;false, MemAt, std::string(int)&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">static&lt;/span> &lt;span class="k">decltype&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">auto&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">invoke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Args&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="n">args&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">OverloadTraits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">conv_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">matched_overload_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Q&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Args&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// overload_traits_impl&amp;lt;qualifier_type::lv, false, std::string, int&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">auto&lt;/span> &lt;span class="n">dispatcher&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">meta_&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">dispatcher_meta&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">OverloadTraits&lt;/span> &lt;span class="o">::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">meta_provider&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_direct&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">typename&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">dispatch_type&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;::&lt;/span>&lt;span class="n">dispatcher&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* dispatcher = p.meta_-&amp;gt;template dispatcher_meta&amp;lt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> overload_traits_impl&amp;lt;qualifier_type::lv, false, std::string, int&amp;gt;::meta_provider&amp;lt;false, MemAt&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> &amp;gt;::dispatcher
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nf">constexpr&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">C&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_direct&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">OverloadTraits&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">qualifier&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">qualifier_type&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">rv&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">meta_ptr_reset_guard&lt;/span> &lt;span class="n">guard&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">meta_&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">dispatcher&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">byte&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr_&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">args&lt;/span>&lt;span class="p">)...);&lt;/span> &lt;span class="c1">// 到这里基本可以猜到调用的就是MemAt的operator()了
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nf">dispatcher&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">byte&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr_&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">args&lt;/span>&lt;span class="p">)...);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">A&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qualifier_type&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="c1">// A = MemAt::accessor&amp;lt;Dictionary, conv_impl&amp;lt;false, MemAt, std::string(int)&amp;gt;, std::string(int)&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">static&lt;/span> &lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">access&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nf">constexpr&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">is_base_of_v&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="c1">// proxy&amp;lt;F&amp;gt; 继承自A则直接将a向下转换得到proxy
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="k">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">A&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">reinterpret_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_qualifier_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">reinterpret_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_qualifier_ptr_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">byte&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">add_qualifier_ptr_t&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">typename&lt;/span> &lt;span class="n">facade_traits&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">indirect_accessor&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Q&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">addressof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">)))&lt;/span> &lt;span class="o">-&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">offsetof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ia_&lt;/span>&lt;span class="p">)));&lt;/span> &lt;span class="c1">// 虽然看起来很复杂 其实只是通过a的地址减去ia_在proxy中的地址偏移来得到自身的proxy
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">A&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">access_proxy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">noexcept&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">proxy_helper&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">access&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">qualifier_type&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">lv&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">class&lt;/span>&lt;span class="err">... &lt;/span>&lt;span class="nc">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">decltype&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">auto&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">proxy_invoke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">proxy&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Args&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span>&lt;span class="p">...&lt;/span>&lt;span class="n">args&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">proxy_helper&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">F&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="k">template&lt;/span> &lt;span class="n">invoke&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">C&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">details&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">qualifier_type&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">lv&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">forward&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Args&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">args&lt;/span>&lt;span class="p">)...);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>
