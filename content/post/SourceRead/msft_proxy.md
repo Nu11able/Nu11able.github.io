@@ -1,5 +1,5 @@
 ---
-title: asm
+title: Proxy
 date: 2024-11-06
 tags:
  - c++
@@ -84,37 +84,9 @@ struct MemAt
     template <class D, class... Os>
       requires(sizeof...(Os) > 0u &&
                (details::overload_traits<Os>::applicable && ...))
-    using add_direct_convention = basic_facade_builder<details::add_conv_t<
-                                                           Cs, details::conv_impl<true, D, Os...>>,
-                                                       Rs, C>;
-    template <class D, class... Os>
-      requires(sizeof...(Os) > 0u &&
-               (details::overload_traits<Os>::applicable && ...))
     using add_convention = add_indirect_convention<D, Os...>;
-    template <class R>
-    using add_reflection = basic_facade_builder<
-        Cs, details::add_tuple_t<Rs, R>, C>;
-    template <facade F, bool WithUpwardConversion = false>
-    using add_facade = basic_facade_builder<
-        details::merge_facade_conv_t<Cs, F, WithUpwardConversion>,
-        details::merge_tuple_t<Rs, typename F::reflection_types>,
-        details::merge_constraints(C, F::constraints)>;
-    template <std::size_t PtrSize,
-              std::size_t PtrAlign = details::max_align_of(PtrSize)>
-      requires(std::has_single_bit(PtrAlign) && PtrSize % PtrAlign == 0u)
-    using restrict_layout = basic_facade_builder<
-        Cs, Rs, details::make_restricted_layout(C, PtrSize, PtrAlign)>;
-    template <constraint_level CL>
-    using support_copy = basic_facade_builder<
-        Cs, Rs, details::make_copyable(C, CL)>;
-    template <constraint_level CL>
-    using support_relocation = basic_facade_builder<
-        Cs, Rs, details::make_relocatable(C, CL)>;
-    template <constraint_level CL>
-    using support_destruction = basic_facade_builder<
-        Cs, Rs, details::make_destructible(C, CL)>;
     using build = details::facade_impl<Cs, Rs, details::normalize(C)>;
-    basic_facade_builder() = delete;
+    // ...
   };
 
   using facade_builder = basic_facade_builder<std::tuple<>, std::tuple<>,
@@ -125,6 +97,7 @@ struct MemAt
                                                   .relocatability = details::invalid_cl,
                                                   .destructibility = details::invalid_cl}>;
 // ---------------------------------- 不算华丽的分割线 ----------------------------------
+// 下面依次展开Dictionary的模版实例
 struct Dictionary : pro::facade_builder
     ::add_convention<MemAt, std::string(int)>
     ::build {};
@@ -562,12 +535,15 @@ struct proxy_helper {
 
     template <class C, qualifier_type Q, class... Args> // C=conv_impl<false, MemAt, std::string(int)>
     static decltype(auto) invoke(add_qualifier_t<proxy<F>, Q> p, Args &&...args) {
-        using OverloadTraits = typename conv_traits<C>::template matched_overload_traits<Q, Args...>;
+        using OverloadTraits = typename conv_traits<C>::template matched_overload_traits<Q, Args...>; // overload_traits_impl<qualifier_type::lv, false, std::string, int>
         auto dispatcher = p.meta_->template dispatcher_meta<typename OverloadTraits ::template meta_provider<C::is_direct, typename C::dispatch_type>>::dispatcher;
-        
+        /* dispatcher = p.meta_->template dispatcher_meta<
+                overload_traits_impl<qualifier_type::lv, false, std::string, int>::meta_provider<false, MemAt>
+            >::dispatcher
+        */
         if constexpr (C::is_direct && OverloadTraits::qualifier == qualifier_type::rv) {
             meta_ptr_reset_guard guard{p.meta_};
-            return dispatcher(std::forward<add_qualifier_t<std::byte, Q>>(*p.ptr_), std::forward<Args>(args)...);
+            return dispatcher(std::forward<add_qualifier_t<std::byte, Q>>(*p.ptr_), std::forward<Args>(args)...); // 到这里基本可以猜到调用的就是MemAt的operator()了
         }
         else {
             return dispatcher(std::forward<add_qualifier_t<std::byte, Q>>(*p.ptr_), std::forward<Args>(args)...);
