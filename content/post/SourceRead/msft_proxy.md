@@ -1,5 +1,5 @@
 ---
-title: asm
+title: msft_proxy 源码分析
 date: 2024-11-06
 tags:
  - c++
@@ -8,7 +8,7 @@ categories:
  - source read
 ---
 
-# proxy
+# [proxy](https://github.com/microsoft/proxy)
 看一下官方例子
 ```cpp
 PRO_DEF_MEM_DISPATCH(MemAt, at);
