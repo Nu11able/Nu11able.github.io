@@ -86,6 +86,87 @@ struct coroutine_state {
 - 5. 调用promise_type的initial_suspend方法并等待它的结果(`co_await promise.initial_suspend()`)
 - 6. 当`co_await promise.initial_suspend()`恢复之后开始执行协程函数
 
+## Awaiters 与 Awaitables
+`co_await`的用法大概为`co_await someValue`. 
+>A type that supports the co_await operator is called an Awaitable type.
+
+> An Awaiter type is a type that implements the three special methods that are called as part of a `co_await` expression: `await_ready`, `await_suspend` and `await_resume`
+
+总结来说就是：
+- Awaitable: **一个可以支持`co_await`的类型被称为Awaitable类型**.
+- Awaiter: **实现了这三个函数的类型`await_ready`, `await_suspend`, `await_resume`**
+一个类型可以同时是Awaitable和Awaiter
+
+`co_await expr`的返回值相当于`get_awaiter(get_awaitable(expr)).await_resume()`
+执行流程：
+- 1. 获取awaitable对象
+  - 1. 如果`promise_type`含有`await_transform`方法则将`promise.await_transform(expr)`方法的返回值当做awaitable对象
+  - 2. 否则将expr当做awaitable对象
+- 2. 获取awaiter对象
+  - 1. 如果awaitable对象含有`operator co_await`方法则调用`operator co_await`方法，其返回值作为awaiter对象
+  - 2. 否则将awaitable对象当做awaiter对象
+- 3. 如果awaiter对象的`await_ready`方法返回false则执行`awaiter.await_suspend(handle_t::from_promise(p))`方法
+  - 1. 如果`await_suspend`方法返回void则直接挂起
+  - 2. 如果`await_suspend`方法返回bool则判断返回值，如果为true则挂起
+- 4. 协程恢复执行后，返回`awaiter.await_resume()`的值，作为`co_await expr`的返回值
+
+```cpp
+template<typename P, typename T>
+decltype(auto) get_awaitable(P& promise, T&& expr)
+{
+  if constexpr (has_any_await_transform_member_v<P>)
+    return promise.await_transform(static_cast<T&&>(expr));
+  else
+    return static_cast<T&&>(expr);
+}
+
+template<typename Awaitable>
+decltype(auto) get_awaiter(Awaitable&& awaitable)
+{
+  if constexpr (has_member_operator_co_await_v<Awaitable>)
+    return static_cast<Awaitable&&>(awaitable).operator co_await();
+  else if constexpr (has_non_member_operator_co_await_v<Awaitable&&>)
+    return operator co_await(static_cast<Awaitable&&>(awaitable));
+  else
+    return static_cast<Awaitable&&>(awaitable);
+}
+
+{
+  auto&& value = <expr>;
+  auto&& awaitable = get_awaitable(promise, static_cast<decltype(value)>(value));
+  auto&& awaiter = get_awaiter(static_cast<decltype(awaitable)>(awaitable));
+  if (!awaiter.await_ready())
+  {
+    using handle_t = std::experimental::coroutine_handle<P>;
+
+    using await_suspend_result_t =
+      decltype(awaiter.await_suspend(handle_t::from_promise(p)));
+
+    <suspend-coroutine>
+
+    if constexpr (std::is_void_v<await_suspend_result_t>)
+    {
+      awaiter.await_suspend(handle_t::from_promise(p));
+      <return-to-caller-or-resumer>
+    }
+    else
+    {
+      static_assert(
+         std::is_same_v<await_suspend_result_t, bool>,
+         "await_suspend() must return 'void' or 'bool'.");
+
+      if (awaiter.await_suspend(handle_t::from_promise(p)))
+      {
+        <return-to-caller-or-resumer>
+      }
+    }
+
+    <resume-point>
+  }
+
+  return awaiter.await_resume();
+}
+```
 
 ## 例子
 ### 这是一个协程的[例子](https://devdocs.io/cpp/language/coroutines)
@@ -606,4 +687,5 @@ int main()
 ```
 
 ## 参考链接
+[Asymmetric Transfer](https://lewissbaker.github.io/)
 [Coroutines](https://en.cppreference.com/w/cpp/language/coroutines)
