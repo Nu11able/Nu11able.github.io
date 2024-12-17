@@ -299,8 +299,7 @@ int main()
     }
 }
 ```
-
-### 经过[cppinsights](https://cppinsights.io/)转化后
+经过[cppinsights](https://cppinsights.io/)转化后
 ```cpp
 /*************************************************************************************
  * NOTE: The coroutine transformation you've enabled is a hand coded transformation! *
@@ -685,6 +684,655 @@ int main()
 }
 
 ```
+
+### 这是另一个例子
+```cpp
+#include <string>
+#include <coroutine>
+#include <format>
+#include <iostream>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+#include <chrono>
+
+using namespace std;
+
+template<typename T>
+class Task;
+
+template<typename T>
+struct task_promise {
+	struct final_awaiter {
+		bool await_ready() noexcept { return false; }
+		template<typename Promise>
+		void await_suspend(coroutine_handle<Promise> coro) noexcept {
+			cout << "final_awaiter await_suspend " << coro.address() << endl;
+			task_promise<T>& promise = coro.promise();
+			if (promise.awaiting_coro) {
+				promise.awaiting_coro.resume();
+			}
+		}
+		void await_resume() noexcept {}
+	};
+
+	Task<T> get_return_object() {
+		return Task<T>{ coroutine_handle<task_promise<T>>::from_promise(*this) };
+	}
+	suspend_never initial_suspend() noexcept { return {}; }
+	final_awaiter final_suspend() noexcept {
+		cout << coroutine_handle<task_promise<T>>::from_promise(*this).address() << " final_suspend\n";
+		return {}; 
+	}
+	void unhandled_exception() {}
+	void return_value(T val) {
+		cout << "return_value=" << val << endl;
+		value = val;
+	}
+
+	T value{};
+	coroutine_handle<> awaiting_coro;
+};
+
+template<typename T>
+class Task {
+public:
+	using promise_type = task_promise<T>;
+
+	Task(coroutine_handle<task_promise<T>> handle) : coro(handle) {
+		cout << "create task, " << "address:" << coro.address() << endl;
+	}
+	~Task() {
+		cout << "destroy\n";
+		if (coro) coro.destroy();
+	}
+
+	T operator()() {
+		cout << "resume address:" << coro.address() << endl;
+		if (!coro.done())
+			coro.resume();
+		return coro.promise().value;
+	}
+
+	bool await_ready() {
+		return coro.done();
+	}
+	T await_resume() {
+		cout << "resume address:" << coro.address() << endl;
+		return coro.promise().value;
+	}
+	void await_suspend(coroutine_handle<> awaiting_coro) {
+		cout << "await_suspend address:" << coro.address() << " awaiting_coro:" << awaiting_coro.address() << endl;
+		coro.promise().awaiting_coro = awaiting_coro;
+		coro.resume();
+	}
+private:
+	coroutine_handle<task_promise<T>> coro;
+};
+
+
+Task<int> task1() {
+	cout << chrono::system_clock::now() << endl;
+	this_thread::sleep_for(1s);
+	cout << "task1\n";
+	co_return 1;
+}
+
+Task<int> task2() {
+	cout << chrono::system_clock::now() << endl;
+	this_thread::sleep_for(1s);
+	cout << "task2\n";
+	auto ret = co_await task1();
+	cout << "task1 result: " << ret << endl;
+	co_return ret + 1;
+}
+
+int main() {
+	auto task = task2();
+	auto result = task();
+	cout << "task result: " << result << endl;
+	return 0;
+}
+```
+
+经过[cppinsights](https://cppinsights.io/)转化后
+```cpp
+/*************************************************************************************
+ * NOTE: The coroutine transformation you've enabled is a hand coded transformation! *
+ *       Most of it is _not_ present in the AST. What you see is an approximation.   *
+ *************************************************************************************/
+#include <string>
+#include <coroutine>
+#include <format>
+#include <iostream>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
+#include <chrono>
+
+using namespace std;
+
+template<typename T>
+class Task;
+/* First instantiated from: insights.cpp:85 */
+#ifdef INSIGHTS_USE_TEMPLATE
+template<>
+class Task<int>
+{
+  
+  public: 
+  using promise_type = task_promise<int>;
+  inline Task(std::coroutine_handle<task_promise<int> > handle)
+  : coro{std::coroutine_handle<task_promise<int> >(handle)}
+  {
+    std::operator<<(std::operator<<(std::cout, "create task, "), "address:").operator<<(this->coro.address()).operator<<(std::endl);
+  }
+  
+  inline ~Task() noexcept
+  {
+    std::operator<<(std::cout, "destroy\n");
+    if(this->coro.operator bool()) {
+      this->coro.destroy();
+    } 
+    
+  }
+  
+  inline int operator()()
+  {
+    std::operator<<(std::cout, "resume address:").operator<<(this->coro.address()).operator<<(std::endl);
+    if(!this->coro.done()) {
+      this->coro.resume();
+    } 
+    
+    return this->coro.promise().value;
+  }
+  
+  inline bool await_ready()
+  {
+    return this->coro.done();
+  }
+  
+  inline int await_resume()
+  {
+    std::operator<<(std::cout, "resume address:").operator<<(this->coro.address()).operator<<(std::endl);
+    return this->coro.promise().value;
+  }
+  
+  inline void await_suspend(std::coroutine_handle<void> awaiting_coro)
+  {
+    std::operator<<(std::operator<<(std::cout, "await_suspend address:").operator<<(this->coro.address()), " awaiting_coro:").operator<<(awaiting_coro.address()).operator<<(std::endl);
+    this->coro.promise().awaiting_coro.operator=(awaiting_coro);
+    this->coro.resume();
+  }
+  
+  
+  private: 
+  std::coroutine_handle<task_promise<int> > coro;
+  public: 
+};
+
+#endif
+
+template<typename T>
+struct task_promise
+{
+  struct final_awaiter
+  {
+    inline bool await_ready() noexcept
+    {
+      return false;
+    }
+    
+    template<typename Promise>
+    inline void await_suspend(coroutine_handle<Promise> coro) noexcept
+    {
+      operator<<(operator<<(std::operator<<(std::cout, "final_awaiter await_suspend "), coro.address()), endl);
+      task_promise<T> & promise = coro.promise();
+      if(promise.awaiting_coro) {
+        promise.awaiting_coro.resume();
+      } 
+      
+    }
+    inline void await_resume() noexcept
+    {
+    }
+    
+  };
+  
+  inline Task<T> get_return_object()
+  {
+    return Task<T>{{coroutine_handle<task_promise<T> >::from_promise(*this)}};
+  }
+  
+  inline std::suspend_never initial_suspend() noexcept
+  {
+    return {};
+  }
+  
+  inline final_awaiter final_suspend() noexcept
+  {
+    operator<<(operator<<(std::cout, coroutine_handle<task_promise<T> >::from_promise(*this).address()), " final_suspend\n");
+    return {};
+  }
+  
+  inline void unhandled_exception()
+  {
+  }
+  
+  inline void return_value(T val)
+  {
+    operator<<(operator<<(std::operator<<(std::cout, "return_value="), val), endl);
+    this->value = val;
+  }
+  
+  T value{};
+  std::coroutine_handle<void> awaiting_coro;
+};
+
+/* First instantiated from: insights.cpp:85 */
+#ifdef INSIGHTS_USE_TEMPLATE
+template<>
+struct task_promise<int>
+{
+  struct final_awaiter
+  {
+    inline bool await_ready() noexcept
+    {
+      return false;
+    }
+    
+    template<typename Promise>
+    inline void await_suspend(coroutine_handle<Promise> coro) noexcept;
+    
+    /* First instantiated from: insights.cpp:85 */
+    #ifdef INSIGHTS_USE_TEMPLATE
+    template<>
+    inline void await_suspend<task_promise<int> >(std::coroutine_handle<task_promise<int> > coro) noexcept
+    {
+      std::operator<<(std::cout, "final_awaiter await_suspend ").operator<<(coro.address()).operator<<(std::endl);
+      task_promise<int> & promise = coro.promise();
+      if(promise.awaiting_coro.operator bool()) {
+        promise.awaiting_coro.resume();
+      } 
+      
+    }
+    #endif
+    
+    inline void await_resume() noexcept
+    {
+    }
+    
+  };
+  
+  inline Task<int> get_return_object()
+  {
+    return Task<int>{std::coroutine_handle<task_promise<int> >::from_promise(*this)};
+  }
+  
+  inline std::suspend_never initial_suspend() noexcept
+  {
+    return {};
+  }
+  
+  inline final_awaiter final_suspend() noexcept
+  {
+    std::operator<<(std::cout.operator<<(static_cast<const std::coroutine_handle<task_promise<int> > &&>(std::coroutine_handle<task_promise<int> >::from_promise(*this)).address()), " final_suspend\n");
+    return {};
+  }
+  
+  inline void unhandled_exception()
+  {
+  }
+  
+  inline void return_value(int val)
+  {
+    std::operator<<(std::cout, "return_value=").operator<<(val).operator<<(std::endl);
+    this->value = val;
+  }
+  
+  int value{};
+  std::coroutine_handle<void> awaiting_coro;
+  // inline constexpr task_promise() noexcept = default;
+};
+
+#endif
+
+template<typename T>
+class Task
+{
+  
+  public: 
+  using promise_type = task_promise<T>;
+  inline Task(coroutine_handle<task_promise<T> > handle)
+  : coro(handle)
+  {
+    operator<<(operator<<(std::operator<<(std::operator<<(std::cout, "create task, "), "address:"), this->coro.address()), endl);
+  }
+  
+  inline ~Task()
+  {
+    std::operator<<(std::cout, "destroy\n");
+    if(this->coro) {
+      this->coro.destroy();
+    } 
+    
+  }
+  
+  inline T operator()()
+  {
+    operator<<(operator<<(std::operator<<(std::cout, "resume address:"), this->coro.address()), endl);
+    if(!this->coro.done()) {
+      this->coro.resume();
+    } 
+    
+    return this->coro.promise().value;
+  }
+  
+  inline bool await_ready()
+  {
+    return this->coro.done();
+  }
+  
+  inline T await_resume()
+  {
+    operator<<(operator<<(std::operator<<(std::cout, "resume address:"), this->coro.address()), endl);
+    return this->coro.promise().value;
+  }
+  
+  inline void await_suspend(std::coroutine_handle<void> awaiting_coro)
+  {
+    operator<<(operator<<(operator<<(operator<<(std::operator<<(std::cout, "await_suspend address:"), this->coro.address()), " awaiting_coro:"), awaiting_coro.address()), endl);
+    this->coro.promise().awaiting_coro = awaiting_coro;
+    this->coro.resume();
+  }
+  
+  
+  private: 
+  coroutine_handle<task_promise<T> > coro;
+};
+
+/* First instantiated from: insights.cpp:85 */
+#ifdef INSIGHTS_USE_TEMPLATE
+template<>
+class Task<int>
+{
+  
+  public: 
+  using promise_type = task_promise<int>;
+  inline Task(std::coroutine_handle<task_promise<int> > handle)
+  : coro{std::coroutine_handle<task_promise<int> >(handle)}
+  {
+    std::operator<<(std::operator<<(std::cout, "create task, "), "address:").operator<<(this->coro.address()).operator<<(std::endl);
+  }
+  
+  inline ~Task() noexcept
+  {
+    std::operator<<(std::cout, "destroy\n");
+    if(this->coro.operator bool()) {
+      this->coro.destroy();
+    } 
+    
+  }
+  
+  inline int operator()()
+  {
+    std::operator<<(std::cout, "resume address:").operator<<(this->coro.address()).operator<<(std::endl);
+    if(!this->coro.done()) {
+      this->coro.resume();
+    } 
+    
+    return this->coro.promise().value;
+  }
+  
+  inline bool await_ready()
+  {
+    return this->coro.done();
+  }
+  
+  inline int await_resume()
+  {
+    std::operator<<(std::cout, "resume address:").operator<<(this->coro.address()).operator<<(std::endl);
+    return this->coro.promise().value;
+  }
+  
+  inline void await_suspend(std::coroutine_handle<void> awaiting_coro)
+  {
+    std::operator<<(std::operator<<(std::cout, "await_suspend address:").operator<<(this->coro.address()), " awaiting_coro:").operator<<(awaiting_coro.address()).operator<<(std::endl);
+    this->coro.promise().awaiting_coro.operator=(awaiting_coro);
+    this->coro.resume();
+  }
+  
+  
+  private: 
+  std::coroutine_handle<task_promise<int> > coro;
+  public: 
+};
+
+#endif
+
+struct __task1Frame
+{
+  void (*resume_fn)(__task1Frame *);
+  void (*destroy_fn)(__task1Frame *);
+  task_promise<int> __promise;
+  int __suspend_index;
+  bool __initial_await_suspend_called;
+  std::suspend_never __suspend_85_11;
+  task_promise<int>::final_awaiter __suspend_85_11_1;
+};
+
+Task<int> task1()
+{
+  /* Allocate the frame including the promise */
+  /* Note: The actual parameter new is __builtin_coro_size */
+  __task1Frame * __f = reinterpret_cast<__task1Frame *>(operator new(sizeof(__task1Frame)));
+  __f->__suspend_index = 0;
+  __f->__initial_await_suspend_called = false;
+  
+  /* Construct the promise. */
+  new (&__f->__promise)task_promise<int>{};
+  
+  /* Forward declare the resume and destroy function. */
+  void __task1Resume(__task1Frame * __f);
+  void __task1Destroy(__task1Frame * __f);
+  
+  /* Assign the resume and destroy function pointers. */
+  __f->resume_fn = &__task1Resume;
+  __f->destroy_fn = &__task1Destroy;
+  
+  /* Call the made up function with the coroutine body for initial suspend.
+     This function will be called subsequently by coroutine_handle<>::resume()
+     which calls __builtin_coro_resume(__handle_) */
+  __task1Resume(__f);
+  
+  
+  return __f->__promise.get_return_object();
+}
+
+/* This function invoked by coroutine_handle<>::resume() */
+void __task1Resume(__task1Frame * __f)
+{
+  try 
+  {
+    /* Create a switch to get to the correct resume point */
+    switch(__f->__suspend_index) {
+      case 0: break;
+      case 1: goto __resume_task1_1;
+    }
+    
+    /* co_await insights.cpp:85 */
+    __f->__suspend_85_11 = __f->__promise.initial_suspend();
+    if(!__f->__suspend_85_11.await_ready()) {
+      __f->__suspend_85_11.await_suspend(std::coroutine_handle<task_promise<int> >::from_address(static_cast<void *>(__f)).operator std::coroutine_handle<void>());
+      __f->__suspend_index = 1;
+      __f->__initial_await_suspend_called = true;
+      return;
+    } 
+    
+    __resume_task1_1:
+    __f->__suspend_85_11.await_resume();
+    std::chrono::operator<<(std::cout, std::chrono::system_clock::now()).operator<<(std::endl);
+    std::this_thread::sleep_for(std::operator""s<'1'>());
+    std::operator<<(std::cout, "task1\n");
+    /* co_return insights.cpp:89 */
+    __f->__promise.return_value(1);
+    goto __final_suspend;
+  } catch(...) {
+    if(!__f->__initial_await_suspend_called) {
+      throw ;
+    } 
+    
+    __f->__promise.unhandled_exception();
+  }
+  
+  __final_suspend:
+  
+  /* co_await insights.cpp:85 */
+  __f->__suspend_85_11_1 = __f->__promise.final_suspend();
+  if(!__f->__suspend_85_11_1.await_ready()) {
+    __f->__suspend_85_11_1.await_suspend<task_promise<int> >(std::coroutine_handle<task_promise<int> >::from_address(static_cast<void *>(__f)));
+    return;
+  } 
+  
+  __f->destroy_fn(__f);
+}
+
+/* This function invoked by coroutine_handle<>::destroy() */
+void __task1Destroy(__task1Frame * __f)
+{
+  /* destroy all variables with dtors */
+  __f->~__task1Frame();
+  /* Deallocating the coroutine frame */
+  /* Note: The actual argument to delete is __builtin_coro_frame with the promise as parameter */
+  operator delete(static_cast<void *>(__f));
+}
+
+
+struct __task2Frame
+{
+  void (*resume_fn)(__task2Frame *);
+  void (*destroy_fn)(__task2Frame *);
+  task_promise<int> __promise;
+  int __suspend_index;
+  bool __initial_await_suspend_called;
+  int ret;
+  std::suspend_never __suspend_93_11;
+  Task<int> __suspend_97_22;
+  int __suspend_97_22_res;
+  task_promise<int>::final_awaiter __suspend_93_11_1;
+};
+
+Task<int> task2()
+{
+  /* Allocate the frame including the promise */
+  /* Note: The actual parameter new is __builtin_coro_size */
+  __task2Frame * __f = reinterpret_cast<__task2Frame *>(operator new(sizeof(__task2Frame)));
+  __f->__suspend_index = 0;
+  __f->__initial_await_suspend_called = false;
+  
+  /* Construct the promise. */
+  new (&__f->__promise)task_promise<int>{};
+  
+  /* Forward declare the resume and destroy function. */
+  void __task2Resume(__task2Frame * __f);
+  void __task2Destroy(__task2Frame * __f);
+  
+  /* Assign the resume and destroy function pointers. */
+  __f->resume_fn = &__task2Resume;
+  __f->destroy_fn = &__task2Destroy;
+  
+  /* Call the made up function with the coroutine body for initial suspend.
+     This function will be called subsequently by coroutine_handle<>::resume()
+     which calls __builtin_coro_resume(__handle_) */
+  __task2Resume(__f);
+  
+  
+  return __f->__promise.get_return_object();
+}
+
+/* This function invoked by coroutine_handle<>::resume() */
+void __task2Resume(__task2Frame * __f)
+{
+  try 
+  {
+    /* Create a switch to get to the correct resume point */
+    switch(__f->__suspend_index) {
+      case 0: break;
+      case 1: goto __resume_task2_1;
+      case 2: goto __resume_task2_2;
+    }
+    
+    /* co_await insights.cpp:93 */
+    __f->__suspend_93_11 = __f->__promise.initial_suspend();
+    if(!__f->__suspend_93_11.await_ready()) {
+      __f->__suspend_93_11.await_suspend(std::coroutine_handle<task_promise<int> >::from_address(static_cast<void *>(__f)).operator std::coroutine_handle<void>());
+      __f->__suspend_index = 1;
+      __f->__initial_await_suspend_called = true;
+      return;
+    } 
+    
+    __resume_task2_1:
+    __f->__suspend_93_11.await_resume();
+    std::chrono::operator<<(std::cout, std::chrono::system_clock::now()).operator<<(std::endl);
+    std::this_thread::sleep_for(std::operator""s<'1'>());
+    std::operator<<(std::cout, "task2\n");
+    
+    /* co_await insights.cpp:97 */
+    __f->__suspend_97_22 = task1();
+    if(!__f->__suspend_97_22.await_ready()) {
+      __f->__suspend_97_22.await_suspend(std::coroutine_handle<task_promise<int> >::from_address(static_cast<void *>(__f)).operator std::coroutine_handle<void>());
+      __f->__suspend_index = 2;
+      return;
+    } 
+    
+    __resume_task2_2:
+    __f->__suspend_97_22_res = __f->__suspend_97_22.await_resume();
+    __f->ret = __f->__suspend_97_22_res;
+    std::operator<<(std::cout, "task1 result: ").operator<<(__f->ret).operator<<(std::endl);
+    /* co_return insights.cpp:99 */
+    __f->__promise.return_value(__f->ret + 1);
+    goto __final_suspend;
+  } catch(...) {
+    if(!__f->__initial_await_suspend_called) {
+      throw ;
+    } 
+    
+    __f->__promise.unhandled_exception();
+  }
+  
+  __final_suspend:
+  
+  /* co_await insights.cpp:93 */
+  __f->__suspend_93_11_1 = __f->__promise.final_suspend();
+  if(!__f->__suspend_93_11_1.await_ready()) {
+    __f->__suspend_93_11_1.await_suspend<task_promise<int> >(std::coroutine_handle<task_promise<int> >::from_address(static_cast<void *>(__f)));
+    return;
+  } 
+  
+  __f->destroy_fn(__f);
+}
+
+/* This function invoked by coroutine_handle<>::destroy() */
+void __task2Destroy(__task2Frame * __f)
+{
+  /* destroy all variables with dtors */
+  __f->~__task2Frame();
+  /* Deallocating the coroutine frame */
+  /* Note: The actual argument to delete is __builtin_coro_frame with the promise as parameter */
+  operator delete(static_cast<void *>(__f));
+}
+
+
+int main()
+{
+  Task<int> task = task2();
+  int result = task.operator()();
+  std::operator<<(std::cout, "task result: ").operator<<(result).operator<<(std::endl);
+  return 0;
+}
+
+```
+
 
 ## 参考链接
 [Asymmetric Transfer](https://lewissbaker.github.io/)
