@@ -65,7 +65,16 @@ add_executable(client ${PROJECT_SOURCE_DIR}/test/client.cc)
 |-|-|
 |PROJECT_SOURCE_DIR|/home/name/project|
 
+## 学习记录
+
+
 ## 问题汇总
 
 ### cmake+vscode配置后源代码中显示头文件找不到
 在项目文件夹下.vscode中settings.json中添加行"C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
+
+### find_package 查找的包没有使用CMAKE_PREFIX_PATH目录下的包
+find_package 默认使用module模式，也就是如果cmake自带有相应的FindXXX.cmake，则会使用该脚本。而不是安装包时生成的XXXConfig.cmake
+```cmake
+find_package(XXX REQUIRED CONFIG)
+```
