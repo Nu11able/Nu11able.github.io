@@ -13,6 +13,9 @@ docker run -it --name container_name image_name /bin/bash
 
 # 创建并挂载宿主机路径
 docker run -it -v /host/path:/container/path image_name /bin/bash
+# -e 参数设置环境变量
+docker run -it -e http_proxy=http://host.docker.internal:7890 -e https_proxy=http://host.docker.internal:7890 -v /host/path:/container/path image_name /bin/bash
+
 
 # 进入正在运行的容器
 docker exec -it container_name bash
@@ -34,6 +37,8 @@ docker container prune
 
 # 将容器保存为镜像
 docker commit container_id image_name:tag
+docker tag ubuntu2504_dev:last localhost:5000/ubuntu2504_dev:last
+docker push localhost:5000/ubuntu2504_dev
 
 # 查看容器日志
 docker logs container_name
